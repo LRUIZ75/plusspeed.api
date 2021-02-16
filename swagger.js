@@ -10,16 +10,12 @@ const doc = {
     host: "localhost:3900",
     basePath: "/api",
     schemes: ['http', 'https'],
-    consumes: ['application/json'],
+    consumes: ['application/json','form-data'],
     produces: ['application/json'],
     tags: [
         {
             "name": "User",
             "description": "Endpoints"
-        },
-        {
-            "name": "Admin",
-            "description": "Endpoints (authentication is required)"
         }
     ],
     securityDefinitions: {
@@ -39,7 +35,7 @@ const doc = {
         }
     },
     definitions: {
-
+        NoSchema :{},
         GeneralSetting : {
             franchiseName: "Velozz",
             franchiseLogo: "",

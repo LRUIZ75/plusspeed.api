@@ -13,7 +13,7 @@ var generalsettingsController = {
     getSettings: (req, res) => {
         generalSettings.find((err, settings) => {
             // #swagger.tags = ['User']
-            // #swagger.description = 'OBTENER LISTA DE CONFIGURACIONES GENERALES.'
+            // #swagger.description = 'LISTAR LAS CONFIGURACIONES GENERALES.'
             if (err) {
                 return (res.status(500).send({
                     status: "error",
@@ -23,18 +23,22 @@ var generalsettingsController = {
             }
 
             if (!settings || settings.length == 0) {
+                /* #swagger.responses[400] = { 
+               schema: { $ref: "#/definitions/NoSchema" },
+               description: 'No hay elementos en la coleccion de configuraciones' 
+                } */
                 return (res.status(404).send({
                     status: "error",
                     message: "No existen datos en GeneralSettings",
-                    links: [{ "Add Settings": "http://localhost:3900/addsettings" }]
+                    links: [{ "Agregue una configuracion": "http://localhost:3900/api/settings/create" }]
                 }
 
                 ));
             } else {
                 /* #swagger.responses[200] = { 
                schema: { $ref: "#/definitions/GeneralSetting" },
-               description: 'Settings' 
-        } */
+               description: '<b>Se devuelve la coleccion de configuraciones</b>' 
+                } */
                 return (res.status(200).send({
                     status: "ok",
                     settings
@@ -164,7 +168,19 @@ var generalsettingsController = {
 
     setlogo: (req, res) => {
 
-        //Configurar módulo connect multparty
+        // #swagger.tags = ['User']
+        // #swagger.description = 'ACTUALIZAR EL LOGO DE UNA CONFIGURACION'
+        
+        /* #swagger.parameters['id'] = {
+           description: 'Id del registro en la coleccion' ,
+           type: 'string' } 
+        */
+        /*
+            #swagger.parameters['logo'] = { requestbody: {
+            content: 'multipart/form-data', type: 'object', required: true}}
+        */
+
+        //description: 'Archivo grafico: PNG JPEG GIF' ,
 
         //recojer fichero de petición
         var file_name = 'Imagen no proporcionada...';
@@ -204,7 +220,9 @@ var generalsettingsController = {
                             file_name
                         });
                     }
-
+                /* #swagger.responses[200] = { 
+               description: '<b>Logo fue actualizado</b>' 
+                } */
                     return res.status(200).send({
                         status: 'ok',
                         updated: settingsUpdated
