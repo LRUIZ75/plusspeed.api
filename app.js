@@ -1,12 +1,10 @@
 'use strict'
 
 // Cargar módulos de node para crear el servidor
-
-var express = require('express');
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerFile = require('./swagger_output.json');
 var bodyParser = require('body-parser');
-
-
+var express = require('express');
 
 // Ejecutar expresss (htpp)
 var app = express();
@@ -16,8 +14,10 @@ var appRoutes = require('./routes/app.routes');
 
 
 // Middlewares
+
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 
 
@@ -44,6 +44,9 @@ next();
 
 // Añadir prefijos a las rutas / Cargar rutas
 app.use('/api', appRoutes);
+
+// /* Endpoints */
+// require('./src/endpoints')(app);
 
  
 // Exportar módulo (fichero actual)

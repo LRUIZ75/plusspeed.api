@@ -8,12 +8,14 @@ var generalsettingsController = require('../controllers/generalsettings.controll
 var router = express.Router();
 
 var multipart = require('connect-multiparty');
-var md_uploadsettings = multipart({uploadDir: './upload/settings'});
+var md_uploadsettings = multipart({uploadDir: './uploads/logos'});
 
 
-router.get('/getsettings',generalsettingsController.getSettings);
-router.post('/addsettings', generalsettingsController.addsettings);
-router.post('/setlogo:logo', md_uploadsettings, generalsettingsController.setlogo);
+
+router.post('/settings/create', generalsettingsController.addsettings);
+router.post('/settings/update/logo/:id', md_uploadsettings, generalsettingsController.setlogo);
+router.post('/settings/update/:id', generalsettingsController.editsettings);
+router.get('/settings',generalsettingsController.getSettings);
 
 
 

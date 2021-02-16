@@ -1,11 +1,13 @@
 'use strict'
 
 
-var mongoose = require('mongoose');
 
+
+var mongoose = require('mongoose');
 var app = require('./app');
 
 var port = 3900;
+
 
 
 
@@ -25,4 +27,5 @@ mongoose.connect('mongodb://localhost:27017/velozz', { useNewUrlParser: true })
             console.log('INFO: Servidor corriendo en http://localhost:' + port);
         })
     });
+
 
