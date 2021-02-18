@@ -16,7 +16,7 @@ mongoose.set('useUnifiedTopology', true); //new
 
 mongoose.Promise = global.Promise;
 
-mongoose.connect('mongodb://gentle-shore-39296.herokuapp.com', { useNewUrlParser: true })
+mongoose.connect('mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/velozz?retryWrites=true&w=majority', { useNewUrlParser: true })
 
     .then(() => {
         console.log("\n");
