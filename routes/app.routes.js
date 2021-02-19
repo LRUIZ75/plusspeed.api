@@ -15,8 +15,8 @@ var md_uploadsettings = multipart({uploadDir: './uploads/logos'});
 router.post('/settings/create', generalsettingsController.addsettings);
 router.post('/settings/update/logo/:id', md_uploadsettings, generalsettingsController.setlogo);
 router.post('/settings/update/:id', generalsettingsController.editsettings);
+router.get('/settings/:id?',generalsettingsController.getSettings);
 router.get('/settings',generalsettingsController.getSettings);
-
 
 
 // router.post('/save',ArticleController.save);

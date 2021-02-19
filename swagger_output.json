@@ -50,13 +50,9 @@
         "parameters": [
           {
             "name": "data",
-            "requestbody": {
-              "content": "raw",
-              "type": "string",
-              "required": true
-            },
-            "in": "query",
-            "type": "string"
+            "in": "body",
+            "type": "object",
+            "required": true
           }
         ],
         "responses": {
@@ -64,13 +60,16 @@
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
             },
-            "description": "<b>Nuevo registro en generalsettings</b>"
+            "description": "<b>Nuevo registro CREADO en generalsettings</b>"
           },
           "201": {
             "description": "Created"
           },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -92,7 +91,8 @@
           {
             "name": "logo",
             "in": "formData",
-            "type": "file"
+            "type": "file",
+            "required": true
           }
         ],
         "responses": {
@@ -130,13 +130,9 @@
           },
           {
             "name": "data",
-            "requestbody": {
-              "content": "raw",
-              "type": "string",
-              "required": true
-            },
-            "in": "query",
-            "type": "string"
+            "in": "body",
+            "type": "object",
+            "required": true
           }
         ],
         "responses": {
@@ -146,8 +142,44 @@
               "$ref": "#/definitions/GeneralSetting"
             }
           },
+          "304": {
+            "description": "Not Modified"
+          },
           "400": {
             "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/settings/{id?}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR LAS CONFIGURACIONES GENERALES.",
+        "parameters": [
+          {
+            "name": "id?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Se devuelve la coleccion de configuraciones</b>",
+            "schema": {
+              "$ref": "#/definitions/GeneralSetting"
+            }
+          },
+          "404": {
+            "description": "No hay elementos en la coleccion de configuraciones",
+            "schema": {
+              "$ref": "#/definitions/NoSchema"
+            }
           },
           "500": {
             "description": "Internal Server Error"
@@ -169,14 +201,11 @@
               "$ref": "#/definitions/GeneralSetting"
             }
           },
-          "400": {
+          "404": {
+            "description": "No hay elementos en la coleccion de configuraciones",
             "schema": {
               "$ref": "#/definitions/NoSchema"
-            },
-            "description": "No hay elementos en la coleccion de configuraciones"
-          },
-          "404": {
-            "description": "Not Found"
+            }
           },
           "500": {
             "description": "Internal Server Error"

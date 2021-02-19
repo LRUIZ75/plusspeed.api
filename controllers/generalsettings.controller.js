@@ -12,9 +12,22 @@ var generalsettingsController = {
 
 
     getSettings: (req, res) => {
-        generalSettings.find((err, settings) => {
+
             // #swagger.tags = ['User']
             // #swagger.description = 'LISTAR LAS CONFIGURACIONES GENERALES.'
+
+        var settingsId = req.params.id;
+        
+        var query={'_id': {$eq: settingsId}};
+
+        if(!settingsId || settingsId===undefined) query = {};
+        else query={'_id': {$eq: settingsId}};
+        
+        console.log(query);
+
+        generalSettings.find(query,(err, settings) => {
+
+
             if (err) {
                 return (res.status(500).send({
                     status: "error",
@@ -24,13 +37,13 @@ var generalsettingsController = {
             }
 
             if (!settings || settings.length == 0) {
-                /* #swagger.responses[400] = { 
+                /* #swagger.responses[404] = { 
                schema: { $ref: "#/definitions/NoSchema" },
                description: 'No hay elementos en la coleccion de configuraciones' 
                 } */
                 return (res.status(404).send({
                     status: "error",
-                    message: "No existen datos en GeneralSettings",
+                    message: "No encontrado",
                     links: [{ "Agregue una configuracion:": "/api/settings/create" }]
                 }
 
@@ -40,14 +53,12 @@ var generalsettingsController = {
                schema: { $ref: "#/definitions/GeneralSetting" },
                description: '<b>Se devuelve la coleccion de configuraciones</b>' 
                 } */
+
                 return (res.status(200).send({
                     status: "ok",
                     settings
                 }));
             }
-
-
-
         });
     },
 
@@ -58,10 +69,13 @@ var generalsettingsController = {
         var data = req.body;
 
         /*
-        #swagger.parameters['data'] = { requestbody: {
-        content: 'raw', type: 'string', required: true}}
+            #swagger.parameters['data'] = {
+            in: "body",
+            name: "data",
+            type: "object",
+            required: true
+          }
         */
-
 
         //SIN PARAMETROS
         if (!data) {
@@ -95,77 +109,6 @@ var generalsettingsController = {
         //INTENTAR GUARDAR EL NUEVO OBJETO
         gSettings.save((err, storedSettings) => {
             if (err) {
-                return (res.status(400).send({
-                    status: "error",
-                    message: err.message,
-                    source: "Al intentar guardar un nuevo GeneralSetting",
-                    storedSettings
-                }));
-
-            } else {
-                if (!storedSettings) {
-                    return (res.status(400).send({
-                        status: "error",
-                        message: "Al intentar guardar un nuevo GeneralSetting",
-                    }));
-                }
-                /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Nuevo registro en generalsettings</b>' 
-                } */
-                return (res.status(201).send({
-                    status: "ok",
-                    newsettings: storedSettings
-                }));
-            }
-
-        });
-    },
-
-    editsettings: (req, res) => {
-                // #swagger.tags = ['User']
-        // #swagger.description = 'ACTULIZAR DATOS DE CONFIGURACION GENERAL.'
-        var data = req.body;
-        /* #swagger.parameters['id'] = {
-           description: 'Id del registro en la coleccion' ,
-           type: 'string' } 
-        */
-        /*
-        #swagger.parameters['data'] = { requestbody: {
-        content: 'raw', type: 'string', required: true}}
-        */
-        //SIN PARAMETROS
-        if (!data) {
-
-            return (res.status(400).send({
-                status: "error",
-                messager: "No se incluye JSON GeneralSettings"
-            })
-            );
-        }
-
-        var gSettings = new generalSettings();
-
-
-        try {
-
-            gSettings = JSON.parse(data);
-
-        } catch {
-            //JSON INCORRECTO
-            gSettings.franchiseName = " Valor Requerido";
-            return (res.status(400).send({
-                status: "error",
-                message: "JSON Incorrecto",
-                gSettings,
-                data,
-            }));
-        }
-
-
-        //INTENTAR GUARDAR EL NUEVO OBJETO
-        gSettings.save((err, storedSettings) => {
-            if (err) {
                 return (res.status(500).send({
                     status: "error",
                     message: err.message,
@@ -177,7 +120,88 @@ var generalsettingsController = {
                 if (!storedSettings) {
                     return (res.status(500).send({
                         status: "error",
-                        message: "No ",
+                        message: "Al intentar guardar un nuevo GeneralSetting",
+                    }));
+                }
+                /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/GeneralSetting" },
+               description: '<b>Nuevo registro CREADO en generalsettings</b>' 
+                } */
+                return (res.status(201).send({
+                    status: "ok",
+                    newsettings: storedSettings
+                }));
+            }
+
+        });
+    },
+
+
+    editsettings: (req, res) => {
+        // #swagger.tags = ['User']
+        // #swagger.description = 'ACTULIZAR DATOS DE CONFIGURACION GENERAL.'
+        var data = req.body;
+        /* #swagger.parameters['id'] = {
+           description: 'Id del registro en la coleccion' ,
+           type: 'string',
+        required: true} 
+        */
+        /*
+            #swagger.parameters['data'] = {
+            in: "body",
+            name: "data",
+            type: "object",
+            required: true
+          }
+        */
+
+        var id = req.params.id;
+
+        if (!data) {
+
+            return (res.status(400).send({
+                status: "error",
+                messager: "No se incluye JSON GeneralSettings"
+            })
+            );
+        }
+
+        if (!id) {
+
+            return (res.status(400).send({
+                status: "error",
+                messager: "No se incluye id de GeneralSettings"
+            })
+            );
+        }
+
+
+        var query = { '_id': { $eq: id } };
+        var command = { $set: data };
+        console.log(query);
+        console.log(command);
+
+
+
+        //INTENTAR ACTUALIZAR  OBJETO
+        generalSettings.findOneAndUpdate(query, command, { new: true }, (err, storedSettings) => {
+            if (err) {
+                return (res.status(500).send({
+                    status: "error",
+                    message: err.message,
+                    source: "Al intentar guardar un nuevo GeneralSetting",
+                    storedSettings
+                }));
+
+            } else {
+                if (!storedSettings) {
+                                    /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/GeneralSetting" },
+               description: 'No modificado</b>' 
+                } */
+                    return (res.status(304).send({
+                        status: "error",
+                        message: "No fue posible realizar la modificacion",
                     }));
                 }
                 /* #swagger.responses[200] = { 
@@ -200,28 +224,18 @@ var generalsettingsController = {
 
         /* #swagger.parameters['id'] = {
            description: 'Id del registro en la coleccion' ,
-           type: 'string' } 
+           type: 'string',
+           required: true } 
         */
         /*
             #swagger.parameters['logo'] = {
             in: "formData",
             name: "logo",
-            type: "file"
+            type: "file",
+            required: true
           }
         */
 
-        /*
-            paths:
-      /avatar:
-        put:
-          summary: Upload an avatar
-          requestBody:
-            content:
-              image/*:    # Can be image/png, image/svg, image/gif, etc.
-                schema:
-                  type: string
-                  format: base64
-        */
 
         //description: 'Archivo grafico: PNG JPEG GIF' ,
 
@@ -253,15 +267,15 @@ var generalsettingsController = {
             case '.jpeg':
             case '.gif':
                 //Archivo aceptable
-                
+
                 var settingsId = req.params.id;
                 console.log(settingsId + ' ' + file_name);
-                var query = {'_id' : {$eq: settingsId }};
-                var command = {$set: { 'franchiseLogo': file_name }};
+                var query = { '_id': { $eq: settingsId } };
+                var command = { $set: { 'franchiseLogo': file_name } };
                 console.log(query);
                 console.log(command);
 
-                generalSettings.findOneAndUpdate(query, command, { new: true}, (err, settingsUpdated) => {
+                generalSettings.findOneAndUpdate(query, command, { new: true }, (err, settingsUpdated) => {
 
                     if (err) {
                         return res.status(500).send({
@@ -272,7 +286,7 @@ var generalsettingsController = {
                         });
                     }
 
-                    if(!settingsUpdated){
+                    if (!settingsUpdated) {
                         return res.status(404).send({
                             status: 'error',
                             message: 'Objeto no encontrado',
