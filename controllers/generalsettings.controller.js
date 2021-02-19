@@ -5,6 +5,7 @@ var generalSettings = require('../models/generalsettings.model');
 var validator = require('validator');
 var fs = require('fs');
 var path = require('path');
+const { ObjectId } = require('mongodb');
 
 
 var generalsettingsController = {
@@ -30,7 +31,7 @@ var generalsettingsController = {
                 return (res.status(404).send({
                     status: "error",
                     message: "No existen datos en GeneralSettings",
-                    links: [{ "Agregue una configuracion": os.hostname + "/api/settings/create" }]
+                    links: [{ "Agregue una configuracion:": "/api/settings/create" }]
                 }
 
                 ));
@@ -51,14 +52,23 @@ var generalsettingsController = {
     },
 
     addsettings: (req, res) => {
+
+        // #swagger.tags = ['User']
+        // #swagger.description = 'AGREGAR NUEVA CONFIGURACION GENERAL.'
         var data = req.body;
+
+        /*
+        #swagger.parameters['data'] = { requestbody: {
+        content: 'raw', type: 'string', required: true}}
+        */
+
 
         //SIN PARAMETROS
         if (!data) {
 
             return (res.status(400).send({
                 status: "error",
-                messager: "No se incluye JSON GeneralSettings"
+                messager: "Faltan parametros de request en formato JSON"
             })
             );
         }
@@ -96,9 +106,13 @@ var generalsettingsController = {
                 if (!storedSettings) {
                     return (res.status(400).send({
                         status: "error",
-                        message: "No ",
+                        message: "Al intentar guardar un nuevo GeneralSetting",
                     }));
                 }
+                /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/GeneralSetting" },
+               description: '<b>Nuevo registro en generalsettings</b>' 
+                } */
                 return (res.status(201).send({
                     status: "ok",
                     newsettings: storedSettings
@@ -109,8 +123,17 @@ var generalsettingsController = {
     },
 
     editsettings: (req, res) => {
+                // #swagger.tags = ['User']
+        // #swagger.description = 'ACTULIZAR DATOS DE CONFIGURACION GENERAL.'
         var data = req.body;
-
+        /* #swagger.parameters['id'] = {
+           description: 'Id del registro en la coleccion' ,
+           type: 'string' } 
+        */
+        /*
+        #swagger.parameters['data'] = { requestbody: {
+        content: 'raw', type: 'string', required: true}}
+        */
         //SIN PARAMETROS
         if (!data) {
 
@@ -157,6 +180,10 @@ var generalsettingsController = {
                         message: "No ",
                     }));
                 }
+                /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/GeneralSetting" },
+               description: '<b>Registro actualizado en generalsettings</b>' 
+                } */
                 return (res.status(200).send({
                     status: "ok",
                     newsettings: storedSettings
@@ -170,14 +197,30 @@ var generalsettingsController = {
 
         // #swagger.tags = ['User']
         // #swagger.description = 'ACTUALIZAR EL LOGO DE UNA CONFIGURACION'
-        
+
         /* #swagger.parameters['id'] = {
            description: 'Id del registro en la coleccion' ,
            type: 'string' } 
         */
         /*
-            #swagger.parameters['logo'] = { requestbody: {
-            content: 'multipart/form-data', type: 'object', required: true}}
+            #swagger.parameters['logo'] = {
+            in: "formData",
+            name: "logo",
+            type: "file"
+          }
+        */
+
+        /*
+            paths:
+      /avatar:
+        put:
+          summary: Upload an avatar
+          requestBody:
+            content:
+              image/*:    # Can be image/png, image/svg, image/gif, etc.
+                schema:
+                  type: string
+                  format: base64
         */
 
         //description: 'Archivo grafico: PNG JPEG GIF' ,
@@ -210,19 +253,36 @@ var generalsettingsController = {
             case '.jpeg':
             case '.gif':
                 //Archivo aceptable
+                
                 var settingsId = req.params.id;
-                generalSettings.findOneAndUpdate({ _id: settingsId }, { franchiseLogo: file_name }, { new: true }, (err, settingsUpdated) => {
+                console.log(settingsId + ' ' + file_name);
+                var query = {'_id' : {$eq: settingsId }};
+                var command = {$set: { 'franchiseLogo': file_name }};
+                console.log(query);
+                console.log(command);
+
+                generalSettings.findOneAndUpdate(query, command, { new: true}, (err, settingsUpdated) => {
 
                     if (err) {
                         return res.status(500).send({
                             status: 'error',
                             message: 'Error al actualizar logo en GeneralSettings',
+                            error: err,
                             file_name
                         });
                     }
-                /* #swagger.responses[200] = { 
-               description: '<b>Logo fue actualizado</b>' 
-                } */
+
+                    if(!settingsUpdated){
+                        return res.status(404).send({
+                            status: 'error',
+                            message: 'Objeto no encontrado',
+                        });
+                    }
+
+                    /* #swagger.responses[200] = { 
+                   description: '<b>Logo fue actualizado</b>' 
+                    } */
+                    console.log(settingsUpdated);
                     return res.status(200).send({
                         status: 'ok',
                         updated: settingsUpdated
@@ -244,7 +304,10 @@ var generalsettingsController = {
 
 
                 });
-
+                /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/GeneralSetting" },
+               description: '<b>Logo actualizado en generalsettings</b>' 
+                } */
                 return res.status(200).send({
                     status: 'error',
                     message: 'Tipo de archivo no es imagen. El archivo ha sido borrado!!',

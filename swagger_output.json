@@ -43,10 +43,29 @@
   "paths": {
     "/settings/create": {
       "post": {
-        "tags": [],
-        "description": "",
-        "parameters": [],
+        "tags": [
+          "User"
+        ],
+        "description": "AGREGAR NUEVA CONFIGURACION GENERAL.",
+        "parameters": [
+          {
+            "name": "data",
+            "requestbody": {
+              "content": "raw",
+              "type": "string",
+              "required": true
+            },
+            "in": "query",
+            "type": "string"
+          }
+        ],
         "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/GeneralSetting"
+            },
+            "description": "<b>Nuevo registro en generalsettings</b>"
+          },
           "201": {
             "description": "Created"
           },
@@ -72,21 +91,22 @@
           },
           {
             "name": "logo",
-            "requestbody": {
-              "content": "multipart/form-data",
-              "type": "object",
-              "required": true
-            },
-            "in": "query",
-            "type": "string"
+            "in": "formData",
+            "type": "file"
           }
         ],
         "responses": {
           "200": {
-            "description": "<b>Logo fue actualizado</b>"
+            "description": "<b>Logo actualizado en generalsettings</b>",
+            "schema": {
+              "$ref": "#/definitions/GeneralSetting"
+            }
           },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -96,19 +116,35 @@
     },
     "/settings/update/{id}": {
       "post": {
-        "tags": [],
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "description": "ACTULIZAR DATOS DE CONFIGURACION GENERAL.",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "data",
+            "requestbody": {
+              "content": "raw",
+              "type": "string",
+              "required": true
+            },
+            "in": "query",
             "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "<b>Registro actualizado en generalsettings</b>",
+            "schema": {
+              "$ref": "#/definitions/GeneralSetting"
+            }
           },
           "400": {
             "description": "Bad Request"
