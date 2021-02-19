@@ -6,7 +6,7 @@
 var mongoose = require('mongoose');
 var app = require('./app');
 
-var port = 8081;
+const PORT = process.env.PORT || 5000
 
 
 
@@ -23,7 +23,7 @@ mongoose.connect('mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/veloz
             console.log('INFO: La conexión a la base de datos es correcta!!!');
 
             //Crear servidor y ponerme a escuchar peticiones HTTP
-            app.listen(port, () => {
+            app.listen(PORT, () => {
                 console.log('INFO: Servidor corriendo en http://localhost:' + port);
             })
         },
