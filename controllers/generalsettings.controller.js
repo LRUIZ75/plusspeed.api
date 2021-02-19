@@ -1,6 +1,6 @@
 'use strict'
 
-
+const os = require('os');
 var generalSettings = require('../models/generalsettings.model');
 var validator = require('validator');
 var fs = require('fs');
@@ -30,7 +30,7 @@ var generalsettingsController = {
                 return (res.status(404).send({
                     status: "error",
                     message: "No existen datos en GeneralSettings",
-                    links: [{ "Agregue una configuracion": "http://localhost:3900/api/settings/create" }]
+                    links: [{ "Agregue una configuracion": os.hostname + "/api/settings/create" }]
                 }
 
                 ));

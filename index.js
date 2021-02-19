@@ -24,7 +24,7 @@ mongoose.connect('mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/veloz
 
             //Crear servidor y ponerme a escuchar peticiones HTTP
             app.listen(PORT, () => {
-                console.log('INFO: Servidor corriendo en http://localhost:' + PORT);
+                console.log('INFO: Servidor corriendo en: ' + req.get('host') + PORT);
             })
         },
         (err) => { console.log("ERROR: " + err) }
