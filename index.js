@@ -1,12 +1,12 @@
 'use strict'
 
 
-
+global.PORT = process.env.PORT || 5000
 
 var mongoose = require('mongoose');
 var app = require('./app');
 
-const PORT = process.env.PORT || 5000
+
 
 
 
@@ -24,7 +24,7 @@ mongoose.connect('mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/veloz
 
             //Crear servidor y ponerme a escuchar peticiones HTTP
             app.listen(PORT, () => {
-                console.log('INFO: Servidor corriendo en: ' + req.get('host') + PORT);
+                console.log('INFO: Servidor corriendo en: https://' + global.baseURL+':'+global.PORT );
             })
         },
         (err) => { console.log("ERROR: " + err) }

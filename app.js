@@ -9,6 +9,8 @@ var express = require('express');
 // Ejecutar expresss (htpp)
 var app = express();
 
+global.baseURL ='localhost';
+
 // Cargar ficheros rutas
 var appRoutes = require('./routes/app.routes');
 
@@ -17,7 +19,7 @@ var appRoutes = require('./routes/app.routes');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
 
 
 
@@ -37,10 +39,12 @@ res.header('Access-Control-Allow-Origin', '*');
 res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
 res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
 res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+global.baseURL = req.hostname;
 next();
 });
 
 
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Añadir prefijos a las rutas / Cargar rutas
 app.use('/api', appRoutes);
