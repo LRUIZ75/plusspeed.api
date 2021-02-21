@@ -1,5 +1,6 @@
 'use strict'
 
+
 // Cargar módulos de node para crear el servidor
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger_output.json');
@@ -10,6 +11,9 @@ var express = require('express');
 var app = express();
 
 global.baseURL ='localhost';
+
+
+
 
 // Cargar ficheros rutas
 var appRoutes = require('./routes/app.routes');

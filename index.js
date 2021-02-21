@@ -23,10 +23,10 @@ const options = {
     family: 4 // Use IPv4, skip trying IPv6
   };
 
-var uriMongoDB = 'mongodb://localhost:27017/velozz';
+var uriMongoDB = 'mongodb://localhost:27017/plusspeed';
 
 if(process.env.NODE_ENV == 'production')
-  uriMongoDB = 'mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/velozz?retryWrites=true&w=majority';
+  uriMongoDB = 'mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/plusspeed?retryWrites=true&w=majority';
 
 mongoose.Promise = global.Promise;
 

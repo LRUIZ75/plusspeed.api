@@ -1,7 +1,7 @@
 {
-  "name": "velozz-api",
+  "name": "plusspeed-api",
   "version": "1.0.0",
-  "description": "API Restful - Velozz",
+  "description": "+Speed API Restful",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

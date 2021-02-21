@@ -4,8 +4,8 @@ const swaggerAutogen = require('swagger-autogen')()
 const doc = {
     info: {
         version: "1.0.0",
-        title: "Velozz API",
-        description: "API Rest Velozz - <b>Generado con Swagger</b>"
+        title: "+Speed API",
+        description: "+Speed API Restful - <b>Generado con Swagger</b>"
     },
     host: "",
     basePath: "/api",
