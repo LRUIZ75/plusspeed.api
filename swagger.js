@@ -37,14 +37,22 @@ const doc = {
     definitions: {
         NoSchema :{},
         GeneralSetting : {
-            franchiseName: "Velozz",
+            franchiseName: "+Speed",
             franchiseLogo: "",
             clientInvoicesDueDays: 7,
             TIN: "8751-23357",
             address: "Managua, NI",
-            invoicesFooter: "La vida en simple",
+            invoicesFooter: " ************* FOOTER ************* ",
             invoicesCurrencyName: "USD",
             payInstructions: "Pay instructions here"
+        },
+        Person: {
+            names: "Nombres",
+            surnames: "Apellidos",
+            idNumber: "2155654",
+            genre: "Hombre",
+            birthday: "",
+            picture: ""
         }
 
     }

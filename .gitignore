@@ -103,3 +103,5 @@ dist
 # TernJS port file
 .tern-port
 /uploads/logos/*.jpg
+controllers/articles.controller.js
+routes/article.route.js

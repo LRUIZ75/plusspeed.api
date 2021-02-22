@@ -39,7 +39,7 @@ mongoose.connect(uriMongoDB, options)
 
             //Crear servidor y ponerme a escuchar peticiones HTTP
             app.listen(PORT, () => {
-                console.log('INFO: Servidor corriendo en: https://' + global.baseURL+':'+global.PORT );
+                console.log('INFO: Escuchando peticiones en el puerto: ' + global.PORT );
             })
         },
         (err) => { console.log("ERROR: " + err) }

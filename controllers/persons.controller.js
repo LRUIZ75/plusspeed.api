@@ -1,36 +1,31 @@
 'use strict'
 
 const os = require('os');
-const generalsettingsModel = require('../models/generalsettings.model');
+const personsModel = require('../models/persons.model');
 const validator = require('validator');
 const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
-var multipart = require('connect-multiparty');
-var md_uploadsettings = multipart({ uploadDir: './uploads/logos' });
 
 
+var personsController = {
 
 
-var generalsettingsController = {
-
-
-    getSettings: (req, res) => {
+    getPersons: (req, res) => {
 
         // #swagger.tags = ['User']
-        // #swagger.description = 'LISTAR LAS CONFIGURACIONES GENERALES.'
+        // #swagger.description = 'LISTAR PERSONAS.'
 
-        var settingsId = req.params.id;
+        var personId = req.params.id;
 
-        var query = { '_id': { $eq: settingsId } };
+        var query = { '_id': { $eq: personId } };
 
-        if (!settingsId || settingsId === undefined) query = {};
-        else query = { '_id': { $eq: settingsId } };
+        if (!personId || personId === undefined) query = {};
+        else query = { '_id': { $eq: personId } };
 
         console.log(query);
 
-
-        generalsettingsModel.find(query, (err, settings) => {
+        personsModel.find(query, (err, persons) => {
 
 
             if (err) {
@@ -41,36 +36,36 @@ var generalsettingsController = {
                 );
             }
 
-            if (!settings || settings.length == 0) {
+            if (!persons || persons.length == 0) {
                 /* #swagger.responses[404] = { 
-               schema: { $ref: "#/definitions/NoSchema" },
-               description: 'No hay elementos en la coleccion de configuraciones' 
+               description: 'No se encontraron elementos' 
                 } */
                 return (res.status(404).send({
                     status: "error",
                     message: "No encontrado",
-                    links: [{ "Agregar registro => curl -X POST ": global.baseURL + "/api/settings" }]
+                    links: [{ "Agregar registro => curl -X POST ":  global.baseURL +"/api/persons" }]
                 }
 
                 ));
             } else {
                 /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Se devuelve la coleccion de configuraciones</b>' 
+               schema: { $ref: "#/definitions/Person" },
+               description: '<b>Lista de personas</b>' 
                 } */
 
                 return (res.status(200).send({
                     status: "ok",
-                    settings
+                    persons
                 }));
             }
         });
     },
-
-    addSettings: (req, res) => {
+    
+    addPerson: (req, res) => {
 
         // #swagger.tags = ['User']
-        // #swagger.description = 'AGREGAR NUEVA CONFIGURACION GENERAL.'
+        // #swagger.description = 'AGREGAR NUEVA PERSONA.'
+        // #swagger.schema = { $ref: "#/definitions/Person" }
         var data = req.body;
 
         /*
@@ -92,32 +87,39 @@ var generalsettingsController = {
             );
         }
 
-        var gSettings = new generalsettingsModel(data);
+        //var parsedJSON = JSON.parse(JSON.stringify(data));
+        // console.log(data);
+        // console.log(JSON.stringify(data));
+        // console.log(parsedJSON);
+        // console.log(new personsModel(data));
+
+        var newPerson = new personsModel(data);
+
 
 
         //INTENTAR GUARDAR EL NUEVO OBJETO
-        gSettings.save((err, storedSettings) => {
+        newPerson.save((err, storedPerson) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
-                    message: "Al intentar guardar un nuevo registro",
+                    message: "Error al intentar guardar un nuevo registro",
                     error: err.message
                 }));
 
             } else {
-                if (!storedSettings) {
+                if (!storedPerson) {
                     return (res.status(500).send({
                         status: "error",
-                        message: "Al intentar guardar un nuevo registro",
+                        message: "Error al intentar guardar un nuevo registro"
                     }));
                 }
-                /* #swagger.responses[201] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Nuevo registro creado</b>' 
+                /* #swagger.responses[200] = { 
+               schema: { $ref: "#/definitions/Person" },
+               description: '<b>Nuevo persona creada</b>' 
                 } */
                 return (res.status(201).send({
                     status: "ok",
-                    newsettings: storedSettings
+                    newPerson: storedPerson
                 }));
             }
 
@@ -172,19 +174,21 @@ var generalsettingsController = {
 
 
         //INTENTAR ACTUALIZAR  OBJETO
-        generalsettingsModel.findOneAndUpdate(query, command, { new: true }, (err, storedSettings) => {
+        generalSettings.findOneAndUpdate(query, command, { new: true }, (err, storedSettings) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
-                    message: "Error al intentar modificar registro",
-                    error: err.message,
+                    message: err.message,
+                    source: "Al intentar guardar un nuevo GeneralSetting",
+                    storedSettings
                 }));
 
             } else {
                 if (!storedSettings) {
-                    /* #swagger.responses[304] = { 
-                    description: 'No modificado' 
-                    } */
+                    /* #swagger.responses[200] = { 
+schema: { $ref: "#/definitions/GeneralSetting" },
+description: 'No modificado</b>' 
+} */
                     return (res.status(304).send({
                         status: "error",
                         message: "No fue posible realizar la modificacion",
@@ -203,7 +207,7 @@ var generalsettingsController = {
         });
     },
 
-    setLogo: (req, res) => {
+    setlogo: (req, res) => {
 
         // #swagger.tags = ['User']
         // #swagger.description = 'ACTUALIZAR EL LOGO DE UNA CONFIGURACION'
@@ -227,7 +231,6 @@ var generalsettingsController = {
 
         //recojer fichero de petición
         var file_name = 'Imagen no proporcionada...';
-        var settingsId = req.params.id;
 
         // console.log(req.files);
 
@@ -238,13 +241,6 @@ var generalsettingsController = {
                 file_name
             });
         }
-        if (!settingsId) {
-            return res.status(400).send({
-                status: 'error',
-                message: 'No hay parámetro: Id'
-            });
-        }
-
         //conseguir nombre y extensión del archivo
         var file_path = req.files.logo.path;
 
@@ -262,13 +258,14 @@ var generalsettingsController = {
             case '.gif':
                 //Archivo aceptable
 
-
+                var settingsId = req.params.id;
+                console.log(settingsId + ' ' + file_name);
                 var query = { '_id': { $eq: settingsId } };
                 var command = { $set: { 'franchiseLogo': file_name } };
                 console.log(query);
                 console.log(command);
 
-                generalsettingsModel.findOneAndUpdate(query, command, { new: true }, (err, settingsUpdated) => {
+                generalSettings.findOneAndUpdate(query, command, { new: true }, (err, settingsUpdated) => {
 
                     if (err) {
                         return res.status(500).send({
@@ -280,12 +277,9 @@ var generalsettingsController = {
                     }
 
                     if (!settingsUpdated) {
-                        /* #swagger.responses[304] = { 
-                       description: 'No encontrado' 
-                        } */
-                        return res.status(304).send({
+                        return res.status(404).send({
                             status: 'error',
-                            message: 'No modificado',
+                            message: 'Objeto no encontrado',
                         });
                     }
 
@@ -318,54 +312,13 @@ var generalsettingsController = {
                schema: { $ref: "#/definitions/GeneralSetting" },
                description: '<b>Logo actualizado en generalsettings</b>' 
                 } */
-                return res.status(304).send({
+                return res.status(200).send({
                     status: 'error',
                     message: 'Tipo de archivo no es imagen. El archivo ha sido borrado!!',
                     file_name
                 });
                 break;
         };
-    },
-
-    getLogo: (req, res) => {
-        // #swagger.tags = ['User']
-        // #swagger.description = 'Obtener Logo'
-
-        /* #swagger.parameters['filename'] = {
-           description: 'Nombre de archivo imagen' ,
-           type: 'string',
-            required: true} 
-        */
-
-        var file = req.params.filename;
-        if (validator.isEmpty(file)) {
-            return (res.status(403).send({
-                status: "error"
-            }));
-        }
-
-        var path_file = './uploads/logos/' + file;
-
-        fs.stat(path_file, (err) => {
-
-            if (err) {
-            /* #swagger.responses[404] = { 
-               description: 'No encontrado' 
-            } */
-                return res.status(404).send({
-                    status: 'error',
-                    message: 'archivo no encontrado',
-                    path: path_file
-                });
-            }
-
-            /* #swagger.responses[200] = { 
-               description: '<b>Archivo de Imagen</b>' 
-            } */
-            return res.status(200).sendFile(path.resolve(path_file));
-
-        });
-
     },
 
     deleteSettings: (req, res) => {
@@ -386,7 +339,7 @@ var generalsettingsController = {
 
             return (res.status(400).send({
                 status: "error",
-                messager: "Falta el parámetro: Id"
+                messager: "No se incluye id de GeneralSettings"
             })
             );
         }
@@ -395,27 +348,29 @@ var generalsettingsController = {
         console.log(query);
 
         //INTENTAR ACTUALIZAR  OBJETO
-        generalsettingsModel.findOneAndDelete(query, { new: false }, (err, deletedSettings) => {
+        generalSettings.findOneAndDelete(query, { new: false }, (err, deletedSettings) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
-                    messsage: "Al intentar eliminar un registro",
-                    error: err.message
+                    message: err.message,
+                    source: "Al intentar eliminar un nuevo GeneralSetting",
+                    deletedSettings
                 }));
 
             } else {
                 if (!deletedSettings) {
-                    /* #swagger.responses[204] = { 
-                    description: 'No eliminado' 
+                    /* #swagger.responses[200] = { 
+                    schema: { $ref: "#/definitions/GeneralSetting" },
+                    description: 'No eliminado</b>' 
                     } */
                     return (res.status(204).send({
                         status: "error",
-                        message: "No fue posible eliminar el registro",
+                        message: "No fue posible realizar la eliminación",
                     }));
                 }
                 /* #swagger.responses[200] = { 
                schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Registro eliminado</b>' 
+               description: '<b>Registro actualizado en generalsettings</b>' 
                 } */
                 return (res.status(200).send({
                     status: "ok",
@@ -429,4 +384,4 @@ var generalsettingsController = {
 
 }
 
-module.exports = generalsettingsController;
+module.exports = personsController;

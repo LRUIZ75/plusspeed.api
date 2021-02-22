@@ -41,7 +41,7 @@
     "application/json"
   ],
   "paths": {
-    "/settings/create": {
+    "/settings": {
       "post": {
         "tags": [
           "User"
@@ -56,14 +56,11 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
+            "description": "<b>Nuevo registro creado</b>",
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
-            },
-            "description": "<b>Nuevo registro CREADO en generalsettings</b>"
-          },
-          "201": {
-            "description": "Created"
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -72,10 +69,34 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR LAS CONFIGURACIONES GENERALES.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "<b>Se devuelve la coleccion de configuraciones</b>",
+            "schema": {
+              "$ref": "#/definitions/GeneralSetting"
+            }
+          },
+          "404": {
+            "description": "No hay elementos en la coleccion de configuraciones",
+            "schema": {
+              "$ref": "#/definitions/NoSchema"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
-    "/settings/update/logo/{id}": {
-      "post": {
+    "/settings/logo/{id}": {
+      "put": {
         "tags": [
           "User"
         ],
@@ -102,11 +123,11 @@
               "$ref": "#/definitions/GeneralSetting"
             }
           },
+          "304": {
+            "description": "No encontrado"
+          },
           "400": {
             "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -114,8 +135,8 @@
         }
       }
     },
-    "/settings/update/{id}": {
-      "post": {
+    "/settings/{id}": {
+      "put": {
         "tags": [
           "User"
         ],
@@ -143,7 +164,39 @@
             }
           },
           "304": {
-            "description": "Not Modified"
+            "description": "No modificado"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "ELIMINAR DATOS DE CONFIGURACION GENERAL.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Registro eliminado</b>",
+            "schema": {
+              "$ref": "#/definitions/GeneralSetting"
+            }
+          },
+          "204": {
+            "description": "No eliminado"
           },
           "400": {
             "description": "Bad Request"
@@ -187,25 +240,111 @@
         }
       }
     },
-    "/settings": {
+    "/settings/logo/{filename}": {
       "get": {
         "tags": [
           "User"
         ],
-        "description": "LISTAR LAS CONFIGURACIONES GENERALES.",
+        "description": "Obtener Logo",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Nombre de archivo imagen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Archivo de Imagen</b>"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "No encontrado"
+          }
+        }
+      }
+    },
+    "/persons": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "AGREGAR NUEVA PERSONA.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "schema": {
+              "$ref": "#/definitions/Person"
+            },
+            "description": "<b>Nuevo persona creada</b>"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR PERSONAS.",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "<b>Se devuelve la coleccion de configuraciones</b>",
+            "description": "<b>Lista de personas</b>",
             "schema": {
-              "$ref": "#/definitions/GeneralSetting"
+              "$ref": "#/definitions/Person"
             }
           },
           "404": {
-            "description": "No hay elementos en la coleccion de configuraciones",
+            "description": "No se encontraron elementos"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/persons/{id?}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR PERSONAS.",
+        "parameters": [
+          {
+            "name": "id?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de personas</b>",
             "schema": {
-              "$ref": "#/definitions/NoSchema"
+              "$ref": "#/definitions/Person"
             }
+          },
+          "404": {
+            "description": "No se encontraron elementos"
           },
           "500": {
             "description": "Internal Server Error"
@@ -224,7 +363,7 @@
       "properties": {
         "franchiseName": {
           "type": "string",
-          "example": "Velozz"
+          "example": "+Speed"
         },
         "franchiseLogo": {
           "type": "string",
@@ -244,7 +383,7 @@
         },
         "invoicesFooter": {
           "type": "string",
-          "example": "La vida en simple"
+          "example": " ************* FOOTER ************* "
         },
         "invoicesCurrencyName": {
           "type": "string",
@@ -253,6 +392,35 @@
         "payInstructions": {
           "type": "string",
           "example": "Pay instructions here"
+        }
+      }
+    },
+    "Person": {
+      "type": "object",
+      "properties": {
+        "names": {
+          "type": "string",
+          "example": "Nombres"
+        },
+        "surnames": {
+          "type": "string",
+          "example": "Apellidos"
+        },
+        "idNumber": {
+          "type": "string",
+          "example": "2155654"
+        },
+        "genre": {
+          "type": "string",
+          "example": "Hombre"
+        },
+        "birthday": {
+          "type": "string",
+          "example": ""
+        },
+        "picture": {
+          "type": "string",
+          "example": ""
         }
       }
     }

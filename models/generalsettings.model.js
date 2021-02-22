@@ -1,22 +1,23 @@
 'use strict'
 
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var GeneralSettingsSchema = Schema({
-    franchiseName: {type: String, require:true},
-	franchiseLogo: {type: String, default:null},
+const GeneralSettingsSchema = Schema({
+    franchiseName: {type: String, required:[true, 'campo requerido']},
+	franchiseLogo: {type: String},
 	clientInvoicesDueDays: {type: Number, default:7},
-	TIN: {type: String, default:null},
-	address: {type: String, default:null},
-	invoicesFooter: {type: String, default:null},
+	TIN: {type: String},
+	address: {type: String},
+	invoicesFooter: {type: String},
 	invoicesCurrencyName: {type: String, default:"USD"},
-	payInstructions: {type: String, default:"Pay instructions here"},
+	payInstructions: {type: String, default:"Payment instructions here"},
+	isActive: {type:Boolean, default: false}
 	
 });
 
 
 
-module.exports = mongoose.model('GeneralSettings',GeneralSettingsSchema);
+module.exports = mongoose.model('GeneralSetting',GeneralSettingsSchema);
 // mongoDB creará la collección, con documentos de estructura del modelo.

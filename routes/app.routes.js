@@ -4,6 +4,7 @@
 var express = require('express');
 
 var generalsettingsController = require('../controllers/generalsettings.controller');
+var personsController  = require('../controllers/persons.controller');
 
 var router = express.Router();
 
@@ -11,22 +12,31 @@ var multipart = require('connect-multiparty');
 var md_uploadsettings = multipart({uploadDir: './uploads/logos'});
 
 
+/* 
+C for Create: HTTP POST
+R for Read: HTTP GET
+U for Update: HTTP PUT
+D for Delete: HTTP DELETE 
+*/
 
-router.post('/settings/create', generalsettingsController.addsettings);
-router.post('/settings/update/logo/:id', md_uploadsettings, generalsettingsController.setlogo);
-router.post('/settings/update/:id', generalsettingsController.editsettings);
-router.get('/settings/:id?',generalsettingsController.getSettings);
-router.get('/settings',generalsettingsController.getSettings);
+//SETTINGS
+router.post('/settings', generalsettingsController.addSettings); //CREATE
+
+router.put('/settings/logo/:id', md_uploadsettings, generalsettingsController.setLogo); //UPDATE
+router.put('/settings/:id', generalsettingsController.editsettings); //UPDATE
+
+router.get('/settings/:id?',generalsettingsController.getSettings); //RETRIEVE
+router.get('/settings/logo/:filename',generalsettingsController.getLogo); //RETRIEVE
+router.get('/settings',generalsettingsController.getSettings); //RETRIEVE
+
+router.delete('/settings/:id',generalsettingsController.deleteSettings); //DELETE
+
+//PERSONS
+router.post('/persons', personsController.addPerson); //CREATE
 
 
-// router.post('/save',ArticleController.save);
-// router.get('/articles/:last?',ArticleController.getArticles);
-// router.get('/article/:id',ArticleController.getArticle);
-// router.put('/article/:id',ArticleController.update);
-// router.delete('/article/:id',ArticleController.delete);
-// router.post('/upload-image/:id',md_upload, ArticleController.upload);
-// router.get('/get-image/:image',ArticleController.getImage);
-// router.get('/search/:search',ArticleController.search);
+router.get('/persons/:id?',personsController.getPersons); //RETRIEVE
+router.get('/persons',personsController.getPersons); //RETRIEVE
 
 
 module.exports = router;

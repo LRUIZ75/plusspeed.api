@@ -26,16 +26,6 @@ app.use(bodyParser.json());
 
 
 
-
-// app.use(function (req, res, next) {
-//   res.setHeader(
-//     'Content-Security-Policy-Report-Only',
-//     "default-src 'self'; font-src 'self'; img-src 'self' https://images.unsplash.com; script-src 'self'; style-src 'self' https://fonts.googleapis.com https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css; frame-src 'self'"
-//   );
-//   next();
-// });
-
-
 // Activar CORS
 // Configurar cabeceras y cors
 app.use((req, res, next) => {
@@ -43,7 +33,8 @@ res.header('Access-Control-Allow-Origin', '*');
 res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
 res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE, PATCH');
 res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE, PATCH');
-global.baseURL = req.hostname;
+global.baseURL = req.hostname +":"+ global.PORT;
+//console.log('INFO: Servidor corriendo en: ' + global.baseURL );
 next();
 });
 
