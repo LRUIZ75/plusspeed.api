@@ -9,7 +9,7 @@ const doc = {
     },
     host: "",
     basePath: "/api",
-    schemes: ['http', 'https'],
+    schemes: ['https', 'http'],
     consumes: ['application/json','form-data'],
     produces: ['application/json'],
     tags: [
