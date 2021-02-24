@@ -10,6 +10,7 @@ var router = express.Router();
 
 var multipart = require('connect-multiparty');
 var md_uploadsettings = multipart({uploadDir: './uploads/logos'});
+var md_uploadpictures = multipart({uploadDir: './uploads/pictures'});
 
 
 /* 
@@ -34,9 +35,14 @@ router.delete('/settings/:id',generalsettingsController.deleteSettings); //DELET
 //PERSONS
 router.post('/persons', personsController.addPerson); //CREATE
 
+router.put('/persons/picture/:id', md_uploadpictures, personsController.setPicture); //UPDATE
+router.put('/persons/:id', personsController.editPerson); //UPDATE
 
 router.get('/persons/:id?',personsController.getPersons); //RETRIEVE
 router.get('/persons',personsController.getPersons); //RETRIEVE
+router.get('/persons/picture/:filename',personsController.getPicture); //RETRIEVE
+
+router.delete('/persons/:id',personsController.deletePerson); //DELETE
 
 
 module.exports = router;

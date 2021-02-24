@@ -42,13 +42,10 @@ var generalsettingsController = {
             }
 
             if (!settings || settings.length == 0) {
-                /* #swagger.responses[404] = { 
-               schema: { $ref: "#/definitions/NoSchema" },
-               description: 'No hay elementos en la coleccion de configuraciones' 
-                } */
+
                 return (res.status(404).send({
                     status: "error",
-                    message: "No encontrado",
+                    message: "Registro(s) no encontrado(s)",
                     links: [{ "Agregar registro => curl -X POST ": global.baseURL + "/api/settings" }]
                 }
 
@@ -56,12 +53,12 @@ var generalsettingsController = {
             } else {
                 /* #swagger.responses[200] = { 
                schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Se devuelve la coleccion de configuraciones</b>' 
+               description: '<b>General Settings</b>' 
                 } */
 
                 return (res.status(200).send({
                     status: "ok",
-                    settings
+                    generalsettings: settings
                 }));
             }
         });
@@ -100,7 +97,6 @@ var generalsettingsController = {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
-                    message: "Al intentar guardar un nuevo registro",
                     error: err.message
                 }));
 
@@ -113,17 +109,16 @@ var generalsettingsController = {
                 }
                 /* #swagger.responses[201] = { 
                schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Nuevo registro creado</b>' 
+               description: '<b>Creado</b>' 
                 } */
                 return (res.status(201).send({
                     status: "ok",
-                    newsettings: storedSettings
+                    created: storedSettings
                 }));
             }
 
         });
     },
-
 
     editsettings: (req, res) => {
         // #swagger.tags = ['User']
@@ -176,27 +171,24 @@ var generalsettingsController = {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
-                    message: "Error al intentar modificar registro",
-                    error: err.message,
+                    error: err.message
                 }));
 
             } else {
                 if (!storedSettings) {
-                    /* #swagger.responses[304] = { 
-                    description: 'No modificado' 
-                    } */
-                    return (res.status(304).send({
+
+                    return (res.status(404).send({
                         status: "error",
-                        message: "No fue posible realizar la modificacion",
+                        message: "No se encontró el registro"
                     }));
                 }
                 /* #swagger.responses[200] = { 
                schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Registro actualizado en generalsettings</b>' 
+               description: '<b>Actualizado</b>' 
                 } */
                 return (res.status(200).send({
                     status: "ok",
-                    newsettings: storedSettings
+                    updated: storedSettings
                 }));
             }
 
@@ -234,8 +226,7 @@ var generalsettingsController = {
         if (!req.files.logo) {
             return res.status(400).send({
                 status: 'error',
-                message: 'No hay parametro: logo',
-                file_name
+                message: 'No hay parametro: logo'
             });
         }
         if (!settingsId) {
@@ -271,28 +262,29 @@ var generalsettingsController = {
                 generalsettingsModel.findOneAndUpdate(query, command, { new: true }, (err, settingsUpdated) => {
 
                     if (err) {
+                        fs.unlinkSync(file_path); 
+
                         return res.status(500).send({
                             status: 'error',
-                            message: 'Error al actualizar logo en GeneralSettings',
-                            error: err,
-                            file_name
+                            message: 'Error al actualizar registro',
+                            error: err
                         });
                     }
 
                     if (!settingsUpdated) {
-                        /* #swagger.responses[304] = { 
-                       description: 'No encontrado' 
-                        } */
-                        return res.status(304).send({
+
+                        fs.unlinkSync(file_path);
+
+                        return res.status(404).send({
                             status: 'error',
-                            message: 'No modificado',
+                            message: 'Registro no encontrado'
                         });
                     }
 
                     /* #swagger.responses[200] = { 
-                   description: '<b>Logo fue actualizado</b>' 
+                   description: '<b>Actualizado</b>' 
                     } */
-                    console.log(settingsUpdated);
+
                     return res.status(200).send({
                         status: 'ok',
                         updated: settingsUpdated
@@ -305,22 +297,11 @@ var generalsettingsController = {
 
                 //Borrar el archivo
 
-                fs.unlink(file_path, (err) => {
-                    return res.status(500).send({
-                        status: 'error',
-                        message: 'Tipo de archivo no es imagen y no pudo ser borrado!!',
-                        file_name
-                    });
+                fs.unlinkSync(file_path);
 
-
-                });
-                /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Logo actualizado en generalsettings</b>' 
-                } */
-                return res.status(304).send({
+                return res.status(400).send({
                     status: 'error',
-                    message: 'Tipo de archivo no es imagen. El archivo ha sido borrado!!',
+                    message: 'Tipo de archivo no es imagen.',
                     file_name
                 });
                 break;
@@ -339,8 +320,9 @@ var generalsettingsController = {
 
         var file = req.params.filename;
         if (validator.isEmpty(file)) {
-            return (res.status(403).send({
-                status: "error"
+            return (res.status(400).send({
+                status: "error",
+                message: "Falta nombre del archivo"
             }));
         }
 
@@ -349,9 +331,7 @@ var generalsettingsController = {
         fs.stat(path_file, (err) => {
 
             if (err) {
-            /* #swagger.responses[404] = { 
-               description: 'No encontrado' 
-            } */
+
                 return res.status(404).send({
                     status: 'error',
                     message: 'archivo no encontrado',
@@ -399,27 +379,24 @@ var generalsettingsController = {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
-                    messsage: "Al intentar eliminar un registro",
                     error: err.message
                 }));
 
             } else {
                 if (!deletedSettings) {
-                    /* #swagger.responses[204] = { 
-                    description: 'No eliminado' 
-                    } */
-                    return (res.status(204).send({
+
+                    return (res.status(404).send({
                         status: "error",
                         message: "No fue posible eliminar el registro",
                     }));
                 }
                 /* #swagger.responses[200] = { 
                schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Registro eliminado</b>' 
+               description: '<b>Borrado</b>' 
                 } */
                 return (res.status(200).send({
                     status: "ok",
-                    deletedSettings: deletedSettings
+                    deleted: deletedSettings
                 }));
             }
 

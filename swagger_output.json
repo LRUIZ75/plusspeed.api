@@ -57,7 +57,7 @@
         ],
         "responses": {
           "201": {
-            "description": "<b>Nuevo registro creado</b>",
+            "description": "<b>Creado</b>",
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
             }
@@ -78,16 +78,13 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "<b>Se devuelve la coleccion de configuraciones</b>",
+            "description": "<b>General Settings</b>",
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
             }
           },
           "404": {
-            "description": "No hay elementos en la coleccion de configuraciones",
-            "schema": {
-              "$ref": "#/definitions/NoSchema"
-            }
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -118,16 +115,13 @@
         ],
         "responses": {
           "200": {
-            "description": "<b>Logo actualizado en generalsettings</b>",
-            "schema": {
-              "$ref": "#/definitions/GeneralSetting"
-            }
-          },
-          "304": {
-            "description": "No encontrado"
+            "description": "<b>Actualizado</b>"
           },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -158,16 +152,16 @@
         ],
         "responses": {
           "200": {
-            "description": "<b>Registro actualizado en generalsettings</b>",
+            "description": "<b>Actualizado</b>",
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
             }
           },
-          "304": {
-            "description": "No modificado"
-          },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -190,16 +184,16 @@
         ],
         "responses": {
           "200": {
-            "description": "<b>Registro eliminado</b>",
+            "description": "<b>Borrado</b>",
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
             }
           },
-          "204": {
-            "description": "No eliminado"
-          },
           "400": {
             "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -223,16 +217,13 @@
         ],
         "responses": {
           "200": {
-            "description": "<b>Se devuelve la coleccion de configuraciones</b>",
+            "description": "<b>General Settings</b>",
             "schema": {
               "$ref": "#/definitions/GeneralSetting"
             }
           },
           "404": {
-            "description": "No hay elementos en la coleccion de configuraciones",
-            "schema": {
-              "$ref": "#/definitions/NoSchema"
-            }
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -259,11 +250,11 @@
           "200": {
             "description": "<b>Archivo de Imagen</b>"
           },
-          "403": {
-            "description": "Forbidden"
+          "400": {
+            "description": "Bad Request"
           },
           "404": {
-            "description": "No encontrado"
+            "description": "Not Found"
           }
         }
       }
@@ -283,14 +274,11 @@
           }
         ],
         "responses": {
-          "200": {
+          "201": {
+            "description": "<b>Creado</b>",
             "schema": {
               "$ref": "#/definitions/Person"
-            },
-            "description": "<b>Nuevo persona creada</b>"
-          },
-          "201": {
-            "description": "Created"
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -308,13 +296,122 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "<b>Lista de personas</b>",
+            "description": "<b>People</b>",
             "schema": {
               "$ref": "#/definitions/Person"
             }
           },
           "404": {
-            "description": "No se encontraron elementos"
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/persons/picture/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "ACTUALIZAR FOTO DE UNA PERSONA",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "picture",
+            "in": "formData",
+            "type": "file",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Actualizado</b>"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/persons/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "ACTULIZAR DATOS DE PERSONA.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Actualizado</b>",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "ELIMINAR DATOS DE PERSONA.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Borrado</b>",
+            "schema": {
+              "$ref": "#/definitions/Person"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -338,16 +435,44 @@
         ],
         "responses": {
           "200": {
-            "description": "<b>Lista de personas</b>",
+            "description": "<b>People</b>",
             "schema": {
               "$ref": "#/definitions/Person"
             }
           },
           "404": {
-            "description": "No se encontraron elementos"
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/persons/picture/{filename}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "Obtener Foto",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Nombre de archivo imagen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Archivo de Imagen</b>"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
           }
         }
       }

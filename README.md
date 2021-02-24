@@ -21,7 +21,6 @@ API REST +SPEED
 
     No exportar tipos/funciones a menos que se necesiten compartirlos en múltiples componentes.
     No introducir nuevos tipos/valores al espacio de nombres global.
-    Los tipos compartidos deberán defininirse en 'types.ts'
     Dentro de un archivo, las definiciones de tipos van primero.
 
  ### null y undefined
