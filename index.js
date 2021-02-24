@@ -25,8 +25,12 @@ const options = {
 
 var uriMongoDB = 'mongodb://localhost:27017/plusspeed';
 
-if(process.env.NODE_ENV == 'production')
+if(process.env.NODE_ENV == 'production'){
   uriMongoDB = 'mongodb+srv://admin:anunaki75@cluster0.qoekj.mongodb.net/plusspeed?retryWrites=true&w=majority';
+  }
+  
+
+  console.log('process.env.NODE_ENV = ' + process.env.NODE_ENV);
 
 mongoose.Promise = global.Promise;
 
@@ -34,12 +38,15 @@ mongoose.connect(uriMongoDB, options)
     .then(
         () => {
             console.log("\n");
+            console.log('INFO: process.env.NODE_ENV = ' + process.env.NODE_ENV);
             console.log('INFO: La conexión a la base de datos es correcta!!!');
             console.log('INFO: La base de datos es: ' + uriMongoDB);
 
             //Crear servidor y ponerme a escuchar peticiones HTTP
             app.listen(PORT, () => {
                 console.log('INFO: Escuchando peticiones en el puerto: ' + global.PORT );
+                
+
             })
         },
         (err) => { console.log("ERROR: " + err) }
