@@ -18,7 +18,7 @@ global.baseURL ='localhost';
 
 // Cargar ficheros rutas
 var appRoutes = require('./routes/app.routes');
-
+var rootRoutes = require('./routes/root.routes');
 
 process.env.SECRET_KEY = "xv2pXfdXV&aDs91P";
 
@@ -45,10 +45,16 @@ console.debug('listening on port ' + global.PORT);
 
 app.disable('x-powered-by');
 
+
+
+
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 // Añadir prefijos a las rutas / Cargar rutas
 app.use('/api', appRoutes);
+app.use('/', rootRoutes);
+
+
 
 // /* Endpoints */
 // require('./src/endpoints')(app);

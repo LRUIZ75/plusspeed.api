@@ -20,7 +20,10 @@ U for Update: HTTP PUT
 D for Delete: HTTP DELETE 
 */
 
+
+
 //SETTINGS
+
 router.post('/settings', generalsettingsController.addSettings); //CREATE
 
 router.put('/settings/logo/:id', md_uploadsettings, generalsettingsController.setLogo); //UPDATE
