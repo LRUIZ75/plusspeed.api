@@ -79,5 +79,22 @@ router.delete('/clients/:id',clientsController.deleteClients); //DELETE
 
 
 
+var driversController = require('../controllers/drivers.controller');
+
+// DRIVERS
+router.post('/drivers', driversController.addDrivers); //CREATE
+
+//router.put('/drivers/picture/:id', md_uploadpictures, driversController.setPicture); //UPDATE
+router.put('/drivers/:id', driversController.editDrivers); //UPDATE
+
+router.get('/drivers/:id?',driversController.getDrivers); //RETRIEVE
+router.get('/drivers',driversController.getDrivers); //RETRIEVE
+//router.get('/drivers/picture/:filename',driversController.getPicture); //RETRIEVE
+
+router.delete('/drivers/:id',driversController.deleteDrivers); //DELETE
+
+
+
+
 
 module.exports = router;

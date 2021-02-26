@@ -847,6 +847,159 @@
           }
         }
       }
+    },
+    "/drivers": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "CREAR UN REGISTRO.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "<b>Creado</b>",
+            "schema": {
+              "$ref": "#/definitions/Drivers"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR REGISTROS.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de Objetos</b>",
+            "schema": {
+              "$ref": "#/definitions/Drivers"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/drivers/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "ACTULIZAR DATOS.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Actualizado</b>",
+            "schema": {
+              "$ref": "#/definitions/Drivers"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "ELIMINAR DATOS.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Borrado</b>",
+            "schema": {
+              "$ref": "#/definitions/Drivers"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/drivers/{id?}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR REGISTROS.",
+        "parameters": [
+          {
+            "name": "id?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de Objetos</b>",
+            "schema": {
+              "$ref": "#/definitions/Drivers"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -1047,6 +1200,97 @@
         "isActive": {
           "type": "boolean",
           "example": true
+        }
+      }
+    },
+    "Drivers": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "example": "mongoose.SchemaTypes.ObjectId"
+        },
+        "mobile": {
+          "type": "string",
+          "example": "String"
+        },
+        "homeAddress": {
+          "type": "string",
+          "example": "String"
+        },
+        "homeLocation": {
+          "type": "string",
+          "example": "Map"
+        },
+        "vehicleType": {
+          "type": "string",
+          "example": "String"
+        },
+        "plateNumber": {
+          "type": "string",
+          "example": "String"
+        },
+        "vehiclePicture": {
+          "type": "string",
+          "example": "String"
+        },
+        "platePicture": {
+          "type": "string",
+          "example": "String"
+        },
+        "vehicleDocumentsPictures": {
+          "type": "array",
+          "example": [
+            "String"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "driversLicenseExpirationDate": {
+          "type": "string",
+          "example": "Date"
+        },
+        "vehicleInsuranceExpirationDate": {
+          "type": "string",
+          "example": "Date"
+        },
+        "vehicleLicenseExpirationDate": {
+          "type": "string",
+          "example": "Date"
+        },
+        "policeRecordPictures": {
+          "type": "array",
+          "example": [
+            "String"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "policeRecordExpirationDate": {
+          "type": "string",
+          "example": "Date"
+        },
+        "currentPosition": {
+          "type": "string",
+          "example": "Map"
+        },
+        "aprovalDate": {
+          "type": "string",
+          "example": "Date"
+        },
+        "aprovedByUserId": {
+          "type": "string",
+          "example": "Number"
+        },
+        "isActive": {
+          "type": "string",
+          "example": "Boolean"
+        },
+        "isAvailable": {
+          "type": "string",
+          "example": "Boolean"
         }
       }
     }

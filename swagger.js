@@ -87,6 +87,27 @@ const doc = {
             currentSettingsId: "ObjectId",
             clientAccountingId: "ObjectId",
             isActive: true
+        },
+        Drivers:{
+            userId: "mongoose.SchemaTypes.ObjectId",
+            mobile: "String",
+            homeAddress: "String",
+            homeLocation: "Map",
+            vehicleType: "String", //requiere enumeracion
+            plateNumber: "String",
+            vehiclePicture: "String",
+            platePicture: "String",
+            vehicleDocumentsPictures: ["String"],
+            driversLicenseExpirationDate: "Date",
+            vehicleInsuranceExpirationDate: "Date",
+            vehicleLicenseExpirationDate: "Date",
+            policeRecordPictures: ["String"],
+            policeRecordExpirationDate: "Date",
+            currentPosition: "Map", //RouteNode Object
+            aprovalDate: "Date",
+            aprovedByUserId: "Number",
+            isActive: "Boolean",
+            isAvailable: "Boolean"
         }
     }
 }

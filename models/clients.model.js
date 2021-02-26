@@ -9,7 +9,7 @@ const Schema = mongoose.Schema;
 
 const ClientSchema = Schema({
 	clientName: String,
-	clientTypeId: String,
+	clientType: String,
 	description: String,
 	logo: String,
 	registerDate: Date,
@@ -18,10 +18,10 @@ const ClientSchema = Schema({
 	bussinessMobile: String,
 	businessEmail: String,
 	taxpayerIdentNumber: String,
-	hqLocation: String,
+	hqLocation: Map, //RouterNode
 	hqAddress: String,
-	currentSettingsId: String,
-	clientAccountingId: String,
+	currentSettingsId: mongoose.SchemaTypes.ObjectId,
+	clientAccountingId: mongoose.SchemaTypes.ObjectId,
 	isActive: Boolean
 });
 
