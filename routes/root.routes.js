@@ -3,13 +3,14 @@
 
 var express = require('express');
 
-var rootrouter = express.Router();
+var rootRouter = express.Router();
 
-var multipart = require('connect-multiparty');
 
-rootrouter.all("/*",function(req,res,next){
+rootRouter.get("/",function(req,res,next){
     res.redirect(302,"/doc");
     next();
 });
 
-module.exports = rootrouter;
+
+
+module.exports = rootRouter;

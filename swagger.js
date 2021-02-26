@@ -10,7 +10,7 @@ const doc = {
     host: "",
     basePath: "/api",
     schemes: ['https', 'http'],
-    consumes: ['application/json','form-data'],
+    consumes: ['application/json', 'form-data'],
     produces: ['application/json'],
     tags: [
         {
@@ -35,8 +35,8 @@ const doc = {
         }
     },
     definitions: {
-        NoSchema :{},
-        GeneralSetting : {
+        NoSchema: {},
+        GeneralSetting: {
             franchiseName: "+Speed",
             franchiseLogo: "",
             clientInvoicesDueDays: 7,
@@ -53,13 +53,46 @@ const doc = {
             genre: "Hombre",
             birthday: "",
             picture: ""
+        },
+        Users: {
+            userName: "lruiz75",
+            password: "hashedvalue",
+            personId: "ObjectId",
+            registeredEmail: "lruiz75@gmail.com",
+            isVerifiedEmail: true,
+            ssoProviderId: "mongoose.ObjectId",
+            registrationDate: "20/02/2021",
+            pinOTP: "Very large string",
+            pinOTPExpiration: "",
+            profilesNames: "comprador",
+            clientId: "mongoose.ObjectId",
+            bearerToken: "sadf2s2e23rdfasdfasd",
+            isLoggedOn: false,
+            lastLogOn: "",
+            isActive: true
+        },
+        Clients: {
+            clientName: "Nombre del Cliente",
+            clientTypeId: "2",
+            description: "Descripcion",
+            logo: "archivo de imagen",
+            registerDate: "20/02/2021",
+            bussinessManageId: "1234213l412321l1234l235",
+            bussinessPhone: "77458877",
+            bussinessMobile: "4654687",
+            businessEmail: "someone@somewhere.com",
+            taxpayerIdentNumber: "2415-2342234-2",
+            hqLocation: "x=122.2,y=234.2",
+            hqAddress: "Dirección del establecimiento principal",
+            currentSettingsId: "ObjectId",
+            clientAccountingId: "ObjectId",
+            isActive: true
         }
-
     }
 }
 
 const outputFile = './swagger_output.json'
-const endpointsFiles = ['./index.js','./routes/app.routes.js']
+const endpointsFiles = ['./index.js', './routes/app.routes.js']
 
 swaggerAutogen(outputFile, endpointsFiles, doc).then(() => {
     require('./index')           // Your project's root file

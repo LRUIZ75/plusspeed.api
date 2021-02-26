@@ -476,6 +476,377 @@
           }
         }
       }
+    },
+    "/users": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "CREAR UN REGISTRO.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "<b>Creado</b>",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR REGISTROS.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de Objetos</b>",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "ACTULIZAR DATOS.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Actualizado</b>",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "ELIMINAR DATOS.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Borrado</b>",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/users/{id?}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR REGISTROS.",
+        "parameters": [
+          {
+            "name": "id?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de Objetos</b>",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/clients": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "CREAR UN REGISTRO.",
+        "parameters": [
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "<b>Creado</b>",
+            "schema": {
+              "$ref": "#/definitions/Clients"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR REGISTROS.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de Objetos</b>",
+            "schema": {
+              "$ref": "#/definitions/Clients"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/clients/logo/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "SUBIR Y ACTUALIZAR IMAGEN",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "picture",
+            "in": "formData",
+            "type": "file",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Actualizado</b>"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/clients/{id}": {
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "description": "ACTULIZAR DATOS.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          },
+          {
+            "name": "data",
+            "in": "body",
+            "type": "object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Actualizado</b>",
+            "schema": {
+              "$ref": "#/definitions/Clients"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "description": "ELIMINAR DATOS.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Id del registro en la coleccion"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Borrado</b>",
+            "schema": {
+              "$ref": "#/definitions/Clients"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/clients/{id?}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "LISTAR REGISTROS.",
+        "parameters": [
+          {
+            "name": "id?",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Lista de Objetos</b>",
+            "schema": {
+              "$ref": "#/definitions/Clients"
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/clients/logo/{filename}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "description": "RECUPERAR LA IMAGEN",
+        "parameters": [
+          {
+            "name": "filename",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "Nombre de archivo imagen"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "<b>Archivo de Imagen</b>"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -546,6 +917,136 @@
         "picture": {
           "type": "string",
           "example": ""
+        }
+      }
+    },
+    "Users": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string",
+          "example": "lruiz75"
+        },
+        "password": {
+          "type": "string",
+          "example": "hashedvalue"
+        },
+        "personId": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "registeredEmail": {
+          "type": "string",
+          "example": "lruiz75@gmail.com"
+        },
+        "isVerifiedEmail": {
+          "type": "boolean",
+          "example": true
+        },
+        "ssoProviderId": {
+          "type": "string",
+          "example": "mongoose.ObjectId"
+        },
+        "registrationDate": {
+          "type": "string",
+          "example": "20/02/2021"
+        },
+        "pinOTP": {
+          "type": "string",
+          "example": "Very large string"
+        },
+        "pinOTPExpiration": {
+          "type": "string",
+          "example": ""
+        },
+        "profilesNames": {
+          "type": "string",
+          "example": "comprador"
+        },
+        "clientId": {
+          "type": "string",
+          "example": "mongoose.ObjectId"
+        },
+        "bearerToken": {
+          "type": "string",
+          "example": "sadf2s2e23rdfasdfasd"
+        },
+        "isLoggedOn": {
+          "type": "boolean",
+          "example": false
+        },
+        "lastLogOn": {
+          "type": "string",
+          "example": ""
+        },
+        "isActive": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "Clients": {
+      "type": "object",
+      "properties": {
+        "clientName": {
+          "type": "string",
+          "example": "Nombre del Cliente"
+        },
+        "clientTypeId": {
+          "type": "string",
+          "example": "2"
+        },
+        "description": {
+          "type": "string",
+          "example": "Descripcion"
+        },
+        "logo": {
+          "type": "string",
+          "example": "archivo de imagen"
+        },
+        "registerDate": {
+          "type": "string",
+          "example": "20/02/2021"
+        },
+        "bussinessManageId": {
+          "type": "string",
+          "example": "1234213l412321l1234l235"
+        },
+        "bussinessPhone": {
+          "type": "string",
+          "example": "77458877"
+        },
+        "bussinessMobile": {
+          "type": "string",
+          "example": "4654687"
+        },
+        "businessEmail": {
+          "type": "string",
+          "example": "someone@somewhere.com"
+        },
+        "taxpayerIdentNumber": {
+          "type": "string",
+          "example": "2415-2342234-2"
+        },
+        "hqLocation": {
+          "type": "string",
+          "example": "x=122.2,y=234.2"
+        },
+        "hqAddress": {
+          "type": "string",
+          "example": "Dirección del establecimiento principal"
+        },
+        "currentSettingsId": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "clientAccountingId": {
+          "type": "string",
+          "example": "ObjectId"
+        },
+        "isActive": {
+          "type": "boolean",
+          "example": true
         }
       }
     }
