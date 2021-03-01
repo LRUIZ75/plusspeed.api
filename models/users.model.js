@@ -2,6 +2,8 @@
 
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require("bcryptjs");
+
 
 const Schema = mongoose.Schema;
 
@@ -22,12 +24,16 @@ const UserSchema = Schema({
         type: String,
         trim: true,
         minLength: 8,
-        maxLength: 12,
         required: [true, 'La contraseña es requerida'],
+        set: v=> {
+            var salt=bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(v, salt);
+            return hash;
+        }
     },
 	personId: {
         type: mongoose.ObjectId,
-        required: [true, "Datos de persona requeridos"]
+       //required: [true, "Datos de persona requeridos"]
     },
 	registeredEmail: {
         type: String, 
@@ -44,12 +50,14 @@ const UserSchema = Schema({
 	isVerifiedEmail: Boolean,
 	ssoProviderId: mongoose.ObjectId,
 
-	registrationDate: Date,
+	registrationDate: {
+        type: Date,
+        default: Date.now()},
 	pinOTP: String,
 	pinOTPExpiration: Date,
 	profilesNames: Array(String),
 	clientId: mongoose.ObjectId,
-	bearerToken: String,
+	refreshAccessToken: String,
 	isLoggedOn: Boolean,
 	lastLogOn: Date,
 	isActive: Boolean,

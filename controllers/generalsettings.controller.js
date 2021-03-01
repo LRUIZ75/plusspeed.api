@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
 var multipart = require('connect-multiparty');
+const { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } = require('constants');
 var md_uploadsettings = multipart({ uploadDir: './uploads/logos' });
 
 
@@ -14,6 +15,44 @@ var md_uploadsettings = multipart({ uploadDir: './uploads/logos' });
 
 var generalsettingsController = {
 
+    /**
+     * @openapi
+     * /api/settings/{id}:
+     *   get:
+     *     description: Get list of general settings
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *       - in: path
+     *         name: id
+     *         description: _id del general setting
+     *         required: false
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: OK
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
+
+    /**
+     * @openapi
+     * /api/settings:
+     *   get:
+     *     description: Get list of general settings
+     *     responses:
+     *       200:
+     *         description: OK
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
 
     getSettings: (req, res) => {
 

@@ -9,17 +9,13 @@ const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
 const { findOneAndDelete } = require('../models/users.model');
-
-
-
+const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
 
 var usersController = {
 
 
     getUsers: (req, res) => {
-
-        // #swagger.tags = ['User']
-        // #swagger.description = 'LISTAR REGISTROS.'
 
         var id = req.params.id;
 
@@ -108,22 +104,24 @@ var usersController = {
                     error: err.message
                 }));
 
-            } else {
-                if (!storedObject) {
-                    return (res.status(500).send({
-                        status: "error",
-                        message: "Error al intentar guardar un nuevo registro"
-                    }));
-                }
-                /* #swagger.responses[201] = { 
-               schema: { $ref: "#/definitions/Users" },
-               description: '<b>Creado</b>' 
-                } */
-                return (res.status(201).send({
-                    status: "ok",
-                    created: storedObject
+            } 
+
+            if (!storedObject) {
+                return (res.status(500).send({
+                    status: "error",
+                    message: "Error al intentar guardar un nuevo registro"
                 }));
             }
+
+            /* #swagger.responses[201] = { 
+            schema: { $ref: "#/definitions/Users" },
+            description: '<b>Creado</b>' 
+            } */
+            return (res.status(201).send({
+                status: "ok",
+                created: storedObject
+            }));
+            
 
         });
     },
@@ -240,8 +238,92 @@ var usersController = {
 
         });
     },
-    
 
+    login: (req, res) => {
+
+        // #swagger.tags = ['Auth']
+        // #swagger.schema = 'UserLogin'
+        // #swagger.description = 'AUTENTICAR USUARIO'
+
+        /*
+            #swagger.parameters['userdata'] = {
+            in: "body",
+            name: "userdata",
+            type: 'object',
+            required: true
+          }
+        */
+
+        var userData = JSON.parse(JSON.stringify(req.body));
+        var userName="";
+        var password="";
+
+        if(!userData){
+            return (res.status(400).send({
+                status: "error",
+                message: "Parámetros de llamada no válidos"
+            }));
+        }
+
+        userName = userData.userName;
+        password = userData.password;
+
+        if (!userName || !password) {
+            return (res.status(400).send({
+                status: "error",
+                message: "Parámetros de llamada no válidos"
+            }));
+        }
+
+        var query = { userName: { $eq: userName } };
+        usersModel.findOne(query, (err, userObject) => {
+            if (err) {
+                return (res.status(500).send({
+                    status: "error",
+                    error: err.message
+                }));
+            }
+
+            if (!userObject) {
+                return (res.status(401).send({
+                    status: "error",
+                    message: "No autorizado"
+                }));
+            }
+
+            if (!bcrypt.compareSync(password, userObject.password)) {
+                return (res.status(401).send({
+                    status: "error",
+                    message: "No autorizado"
+                }));
+            }
+
+            // Proceder con la autorización, crear el JWT y devolverlo con un codigo
+            let payload = { userName: userName };
+            let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET,
+                {
+                    algorithm: "HS256",
+                    expiresIn: process.env.ACCESS_TOKEN_LIFE
+                });
+            
+            let refreshToken = jwt.sign(payload,process.env.REFRESH_TOKEN_SECRET, {
+                algorithm: "HS256",
+                expiresIn: process.env.REFRESH_TOKEN_LIFE
+            });
+
+            var command = {$set : {refreshAccessToken: refreshToken }};
+            usersModel.findOneAndUpdate(query,command);
+
+                /* #swagger.responses[200] = { 
+           description: '<b>Autorizado</b>' 
+            } */
+            return (res.status(200).send({
+                status: "ok",
+                token: accessToken
+            }));
+
+        });
+    } 
 }
 
 module.exports = usersController;
