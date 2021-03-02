@@ -51,12 +51,29 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.3',
     info: {
-      title: 'PlusSpeed API',
+      title: '+Speed API',
       description: 'An API Rest for +Speed',
       version: '1.0.0',
+      license: {
+        name: "GNU AGPL3",
+        url: "https://www.gnu.org/licenses/agpl-3.0-standalone.html"
+      },
+      contact: {
+        name: "CSI HIALEAH",
+        url: "http://csihialeah.odoo.com",
+        email: "csihialeah@gmail.com"
+      },
+      servers: [
+        {
+          url: "http://localhost:5000/"
+        }
+      ],
+      basePath: "/api" 
     },
   },
   components: {
+    schemas: {
+    },
     securitySchemes: {
       bearerAuth: {
         type: 'http',
@@ -65,7 +82,7 @@ const swaggerOptions = {
       }
     }
   },
-  apis: ['./controllers/*.controller.js'], // files containing annotations as above
+  apis: ['./controllers/*.controller.js','./models/*.model.js'], // files containing annotations as above
 };
 
 const openapiSpecification = swaggerJsdoc(swaggerOptions);

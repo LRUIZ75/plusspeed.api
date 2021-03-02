@@ -7,11 +7,14 @@ const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
 var multipart = require('connect-multiparty');
-const { SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG } = require('constants');
 var md_uploadsettings = multipart({ uploadDir: './uploads/logos' });
 
-
-
+/**
+ * @swagger
+ * tags:
+ *   name: GeneralSettings
+ *   description: Settings
+ */
 
 var generalsettingsController = {
 
@@ -19,7 +22,9 @@ var generalsettingsController = {
      * @openapi
      * /api/settings/{id}:
      *   get:
-     *     description: Get list of general settings
+     *     tags: 
+     *       - GeneralSettings
+     *     description: Get general settings by Id
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -27,13 +32,17 @@ var generalsettingsController = {
      *         name: Authorization
      *       - in: path
      *         name: id
-     *         description: _id del general setting
+     *         description: Object Id
      *         required: false
      *         schema:
      *           type: string
      *     responses:
      *       200:
      *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/GeneralSettings"
      *       404:
      *         description: Not Found
      *       500:
@@ -44,10 +53,23 @@ var generalsettingsController = {
      * @openapi
      * /api/settings:
      *   get:
+     *     tags: 
+     *       - GeneralSettings
      *     description: Get list of general settings
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
      *     responses:
      *       200:
      *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: "#/components/schemas/GeneralSettings"
      *       404:
      *         description: Not Found
      *       500:
@@ -55,9 +77,6 @@ var generalsettingsController = {
      */
 
     getSettings: (req, res) => {
-
-        // #swagger.tags = ['User']
-        // #swagger.description = 'LISTAR LAS CONFIGURACIONES GENERALES.'
 
         var settingsId = req.params.id;
 
@@ -90,10 +109,6 @@ var generalsettingsController = {
 
                 ));
             } else {
-                /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>General Settings</b>' 
-                } */
 
                 return (res.status(200).send({
                     status: "ok",
@@ -103,22 +118,37 @@ var generalsettingsController = {
         });
     },
 
+    /**
+     * @openapi
+     * /api/settings:
+     *   post:
+     *     tags: 
+     *       - GeneralSettings
+     *     description: Create general settings
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *       - in: body
+     *         required: true
+     *         schema:
+     *           $ref: "#/components/schemas/GeneralSettings"
+     *     responses:
+     *       201:
+     *         description: Created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/GeneralSettings"
+     *       400:
+     *         description: Bad Request
+     *       500:
+     *         description: Internal Server Error
+     */
     addSettings: (req, res) => {
-
-        // #swagger.tags = ['User']
-        // #swagger.description = 'AGREGAR NUEVA CONFIGURACION GENERAL.'
         var data = req.body;
-
-        /*
-            #swagger.parameters['data'] = {
-            in: "body",
-            name: "data",
-            type: "object",
-            required: true
-          }
-        */
-
-        //SIN PARAMETROS
+ 
         if (!data) {
 
             return (res.status(400).send({
@@ -146,10 +176,7 @@ var generalsettingsController = {
                         message: "Al intentar guardar un nuevo registro",
                     }));
                 }
-                /* #swagger.responses[201] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Creado</b>' 
-                } */
+
                 return (res.status(201).send({
                     status: "ok",
                     created: storedSettings
@@ -158,24 +185,45 @@ var generalsettingsController = {
 
         });
     },
+    
+    /**
+     * @openapi
+     * /api/settings/{id}:
+     *   put:
+     *     tags: 
+     *       - GeneralSettings
+     *     description: Update general settings
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *       - in: path
+     *         name: id
+     *         description: "Object Id"
+     *         type: string
+     *         required: true
+     *       - in: body
+     *         required: true
+     *         schema:
+     *           $ref: "#/components/schemas/GeneralSettings"
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/GeneralSettings"
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
+    editSettings: (req, res) => {
 
-    editsettings: (req, res) => {
-        // #swagger.tags = ['User']
-        // #swagger.description = 'ACTULIZAR DATOS DE CONFIGURACION GENERAL.'
         var data = req.body;
-        /* #swagger.parameters['id'] = {
-           description: 'Id del registro en la coleccion' ,
-           type: 'string',
-        required: true} 
-        */
-        /*
-            #swagger.parameters['data'] = {
-            in: "body",
-            name: "data",
-            type: "object",
-            required: true
-          }
-        */
 
         var id = req.params.id;
 
@@ -200,8 +248,8 @@ var generalsettingsController = {
 
         var query = { '_id': { $eq: id } };
         var command = { $set: data };
-        console.log(query);
-        console.log(command);
+/*         console.log(query);
+        console.log(command); */
 
 
 
@@ -221,10 +269,7 @@ var generalsettingsController = {
                         message: "No se encontró el registro"
                     }));
                 }
-                /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Actualizado</b>' 
-                } */
+
                 return (res.status(200).send({
                     status: "ok",
                     updated: storedSettings
@@ -234,27 +279,47 @@ var generalsettingsController = {
         });
     },
 
+    
+    /**
+     * @openapi
+     * /api/settings/logo/{id}:
+     *   put:
+     *     tags: 
+     *       - GeneralSettings
+     *     description: Upload general settings logo
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *       - in: path
+     *         name: id
+     *         description: "Object Id"
+     *         type: string
+     *         required: true
+     *       - in: form-data
+     *         name: logo
+     *         required: true
+     *         content:
+     *           file:
+     *             schema:
+     *               type: string
+     *               format: base64
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/GeneralSettings"
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
     setLogo: (req, res) => {
-
-        // #swagger.tags = ['User']
-        // #swagger.description = 'ACTUALIZAR EL LOGO DE UNA CONFIGURACION'
-
-        /* #swagger.parameters['id'] = {
-           description: 'Id del registro en la coleccion' ,
-           type: 'string',
-           required: true } 
-        */
-        /*
-            #swagger.parameters['logo'] = {
-            in: "formData",
-            name: "logo",
-            type: "file",
-            required: true
-          }
-        */
-
-
-        //description: 'Archivo grafico: PNG JPEG GIF' ,
 
         //recojer fichero de petición
         var file_name = 'Imagen no proporcionada...';
@@ -320,10 +385,6 @@ var generalsettingsController = {
                         });
                     }
 
-                    /* #swagger.responses[200] = { 
-                   description: '<b>Actualizado</b>' 
-                    } */
-
                     return res.status(200).send({
                         status: 'ok',
                         updated: settingsUpdated
@@ -347,15 +408,35 @@ var generalsettingsController = {
         };
     },
 
-    getLogo: (req, res) => {
-        // #swagger.tags = ['User']
-        // #swagger.description = 'Obtener Logo'
 
-        /* #swagger.parameters['filename'] = {
-           description: 'Nombre de archivo imagen' ,
-           type: 'string',
-            required: true} 
-        */
+    /**
+     * @openapi
+     * /api/settings/logo/{filename}:
+     *   get:
+     *     tags: 
+     *       - GeneralSettings
+     *     description: Get general settings logo by filename
+     *     parameters:
+     *       - in: path
+     *         name: filename
+     *         description: Image filename
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           image/png:
+     *             type: image
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
+    getLogo: (req, res) => {
 
         var file = req.params.filename;
         if (validator.isEmpty(file)) {
@@ -378,25 +459,44 @@ var generalsettingsController = {
                 });
             }
 
-            /* #swagger.responses[200] = { 
-               description: '<b>Archivo de Imagen</b>' 
-            } */
             return res.status(200).sendFile(path.resolve(path_file));
 
         });
 
     },
 
+    /**
+     * @openapi
+     * /api/settings/{id}:
+     *   delete:
+     *     tags: 
+     *       - GeneralSettings
+     *     description: Delete General Settings by id
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: header
+     *         name: Authorization
+     *       - in: path
+     *         name: id
+     *         description: "Object Id"
+     *         type: string
+     *         required: true
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/GeneralSettings"
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
     deleteSettings: (req, res) => {
-        // #swagger.tags = ['User']
-        // #swagger.description = 'ELIMINAR DATOS DE CONFIGURACION GENERAL.'
-
-        /* #swagger.parameters['id'] = {
-           description: 'Id del registro en la coleccion' ,
-           type: 'string',
-        required: true} 
-        */
-
 
         var id = req.params.id;
 
@@ -429,10 +529,7 @@ var generalsettingsController = {
                         message: "No fue posible eliminar el registro",
                     }));
                 }
-                /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/GeneralSetting" },
-               description: '<b>Borrado</b>' 
-                } */
+
                 return (res.status(200).send({
                     status: "ok",
                     deleted: deletedSettings

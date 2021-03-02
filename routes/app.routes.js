@@ -28,16 +28,14 @@ D for Delete: HTTP DELETE
 
 router.post('/settings',verify, generalsettingsController.addSettings); //CREATE
 
-router.put('/settings/logo/:id', md_uploadlogos, generalsettingsController.setLogo); //UPDATE
-router.put('/settings/:id',verify, generalsettingsController.editsettings); //UPDATE
+router.put('/settings/logo/:id', [verify, md_uploadlogos], generalsettingsController.setLogo); //UPDATE LOGO
+router.put('/settings/:id',verify, generalsettingsController.editSettings); //UPDATE
 
 router.get('/settings/:id?',verify, generalsettingsController.getSettings); //RETRIEVE
-router.get('/settings/logo/:filename',generalsettingsController.getLogo); //RETRIEVE
-
-
+router.get('/settings/logo/:filename',generalsettingsController.getLogo); //RETRIEVE LOGO
 router.get('/settings',verify,generalsettingsController.getSettings); //RETRIEVE
 
-router.delete('/settings/:id',generalsettingsController.deleteSettings); //DELETE
+router.delete('/settings/:id',verify,generalsettingsController.deleteSettings); //DELETE
 
 //PERSONS
 router.post('/persons', personsController.addPerson); //CREATE
@@ -68,7 +66,6 @@ router.delete('/users/:id',usersController.deleteUsers); //DELETE
 //AUTHENTICATION
 
 router.post('/login',usersController.login); //POST
-
 
 
 // CLIENTS

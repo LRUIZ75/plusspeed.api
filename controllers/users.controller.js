@@ -12,8 +12,14 @@ const { findOneAndDelete } = require('../models/users.model');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 
-var usersController = {
 
+/**
+ * @openapi
+ * tags:
+ *   name: Users
+ *   description: Users and Authentication
+ */
+var usersController = {
 
     getUsers: (req, res) => {
 
@@ -239,20 +245,48 @@ var usersController = {
         });
     },
 
+    /**
+    * @openapi
+    * /api/login:
+    *   post:
+    *     tags: 
+    *       - Users
+    *     description: Login and Authenticate
+    *     requestBody:
+    *         name: userData
+    *         description: 'Object : username and password'
+    *         required: true
+    *         content: 
+    *           application/json:
+    *             schema:
+    *               properties:
+    *                 userName: 
+    *                   type: string
+    *                   example: 'admin'
+    *                 password: 
+    *                   type: string
+    *                   example: '123Password'
+    *     responses:
+    *       200:
+    *         description: OK
+    *         content:
+    *           application/json:
+    *             schema:
+    *               properties:
+    *                 status: 
+    *                   type: string
+    *                   example: 'ok'
+    *                 token: 
+    *                   type: string
+    *                   example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImxydWl6NzUiLCJpYXQiOjE2MTQ2NDgzNDEsImV4cCI6MTYxNDY1MTk0MX0.4w78Mk1ztSuBhayQCbPOv-v5xrlscpgoAz9OSo2Cm4'
+    *       400:
+    *         description: Bad Request
+    *       401:
+    *         description: Unathorized
+    *       500:
+    *         description: Internal Server Error
+    */
     login: (req, res) => {
-
-        // #swagger.tags = ['Auth']
-        // #swagger.schema = 'UserLogin'
-        // #swagger.description = 'AUTENTICAR USUARIO'
-
-        /*
-            #swagger.parameters['userdata'] = {
-            in: "body",
-            name: "userdata",
-            type: 'object',
-            required: true
-          }
-        */
 
         var userData = JSON.parse(JSON.stringify(req.body));
         var userName="";
@@ -314,9 +348,7 @@ var usersController = {
             var command = {$set : {refreshAccessToken: refreshToken }};
             usersModel.findOneAndUpdate(query,command);
 
-                /* #swagger.responses[200] = { 
-           description: '<b>Autorizado</b>' 
-            } */
+
             return (res.status(200).send({
                 status: "ok",
                 token: accessToken

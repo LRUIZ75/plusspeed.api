@@ -2,6 +2,7 @@
 
 const mongoose = require('mongoose');
 
+
 const Schema = mongoose.Schema;
 
 const GeneralSettingsSchema = Schema({
@@ -16,6 +17,38 @@ const GeneralSettingsSchema = Schema({
 	isActive: {type:Boolean, default: false}
 	
 });
+
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     GeneralSettings:
+ *       properties: 
+ *         franchiseName:
+ *           type: "string"
+ *           required: "true"
+ *         franchiseLogo:
+ *           type: "string"
+ *           default: null
+ *         clientInvoicesDueDays:
+ *           type: "integer"
+ *           default: "7"
+ *         TIN:
+ *           type: "string"
+ *         address:
+ *           type: "string"
+ *         invoicesFooter:
+ *           type: "string"
+ *         invoicesCurrencyName:
+ *           type: "string"
+ *           default: "USD"
+ *         payInstructions:
+ *           type: "string"
+ *           default: "Payment instructions here"
+ *         isActive:
+ *           type: "boolean"
+ *           default: false
+ */
 
 
 
