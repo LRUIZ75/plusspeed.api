@@ -5,11 +5,7 @@ var express = require('express');
 const { verify } = require('../middelware/access.middleware');
 
 var generalsettingsController = require('../controllers/generalsettings.controller');
-var personsController  = require('../controllers/persons.controller');
 var usersController = require('../controllers/users.controller');
-var clientsController = require('../controllers/clients.controller');
-var driversController = require('../controllers/drivers.controller');
-
 
 var router = express.Router();
 
@@ -37,19 +33,6 @@ router.get('/settings',verify,generalsettingsController.getSettings); //RETRIEVE
 
 router.delete('/settings/:id',verify,generalsettingsController.deleteSettings); //DELETE
 
-//PERSONS
-router.post('/persons', personsController.addPerson); //CREATE
-
-router.put('/persons/picture/:id', md_uploadpictures, personsController.setPicture); //UPDATE
-router.put('/persons/:id', personsController.editPerson); //UPDATE
-
-router.get('/persons/:id?',personsController.getPersons); //RETRIEVE
-router.get('/persons',personsController.getPersons); //RETRIEVE
-router.get('/persons/picture/:filename',personsController.getPicture); //RETRIEVE
-
-router.delete('/persons/:id',personsController.deletePerson); //DELETE
-
-
 
 // USERS
 router.post('/users', usersController.addUsers); //CREATE
@@ -66,32 +49,6 @@ router.delete('/users/:id',usersController.deleteUsers); //DELETE
 //AUTHENTICATION
 
 router.post('/login',usersController.login); //POST
-
-
-// CLIENTS
-router.post('/clients', clientsController.addClients); //CREATE
-
-router.put('/clients/logo/:id', md_uploadlogos, clientsController.setPicture); //UPDATE
-router.put('/clients/:id', clientsController.editClients); //UPDATE 
-
-router.get('/clients/:id?',clientsController.getClients); //RETRIEVE
-router.get('/clients',clientsController.getClients); //RETRIEVE
-router.get('/clients/logo/:filename',clientsController.getPicture); //RETRIEVE
-
-router.delete('/clients/:id',clientsController.deleteClients); //DELETE 
-
-
-// DRIVERS
-router.post('/drivers', driversController.addDrivers); //CREATE
-
-//router.put('/drivers/picture/:id', md_uploadpictures, driversController.setPicture); //UPDATE
-router.put('/drivers/:id', driversController.editDrivers); //UPDATE
-
-router.get('/drivers/:id?',driversController.getDrivers); //RETRIEVE
-router.get('/drivers',driversController.getDrivers); //RETRIEVE
-//router.get('/drivers/picture/:filename',driversController.getPicture); //RETRIEVE
-
-router.delete('/drivers/:id',driversController.deleteDrivers); //DELETE
 
 
 

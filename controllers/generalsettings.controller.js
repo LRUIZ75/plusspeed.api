@@ -26,10 +26,8 @@ var generalsettingsController = {
      *       - GeneralSettings
      *     description: Get general settings by Id
      *     security:
-     *       - bearerAuth: []
+     *       - ApiKeyAuth: []
      *     parameters:
-     *       - in: header
-     *         name: Authorization
      *       - in: path
      *         name: id
      *         description: Object Id
@@ -57,10 +55,7 @@ var generalsettingsController = {
      *       - GeneralSettings
      *     description: Get list of general settings
      *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: header
-     *         name: Authorization
+     *       - ApiKeyAuth: []
      *     responses:
      *       200:
      *         description: OK

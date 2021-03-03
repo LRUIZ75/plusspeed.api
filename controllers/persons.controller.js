@@ -1,7 +1,9 @@
+﻿
+
 'use strict'
 
 const os = require('os');
-const personsModel = require('../models/persons.model');
+const personModel = require('../models/persons.model');
 const validator = require('validator');
 const fs = require('fs');
 const path = require('path');
@@ -9,24 +11,80 @@ const { ObjectId } = require('mongodb');
 const { findOneAndDelete } = require('../models/persons.model');
 
 
-var personsController = {
+/**
+ * @swagger
+ * tags:
+ *   name: Person
+ *   description: a person
+ */
 
+var personController = {
 
-    getPersons: (req, res) => {
+    /**
+     * @openapi
+     * /api/person/{id}:
+     *   get:
+     *     tags: 
+     *       - Person
+     *     description: Get a person by Id
+     *     security:
+     *       - ApiKeyAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         description: Object Id
+     *         required: false
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Person"
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
 
-        // #swagger.tags = ['User']
-        // #swagger.description = 'LISTAR PERSONAS.'
+    /**
+     * @openapi
+     * /api/person:
+     *   get:
+     *     tags: 
+     *       - Person
+     *     description: Get list of people
+     *     security:
+     *       - ApiKeyAuth: []
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: array
+     *               items:
+     *                 $ref: "#/components/schemas/Person"
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
 
-        var personId = req.params.id;
+    getPerson: (req, res) => {
 
-        var query = { '_id': { $eq: personId } };
+        var id = req.params.id;
 
-        if (!personId || personId === undefined) query = {};
-        else query = { '_id': { $eq: personId } };
+        var query = { '_id': { $eq: id } };
+
+        if (!id || id === undefined) query = {};
+        else query = { '_id': { $eq: id } };
 
         console.log(query);
 
-        personsModel.find(query, (err, persons) => {
+        personModel.find(query, (err, objects) => {
 
 
             if (err) {
@@ -37,67 +95,75 @@ var personsController = {
                 );
             }
 
-            if (!persons || persons.length == 0) {
- 
+            if (!objects || objects.length == 0) {
+
                 return (res.status(404).send({
                     status: "error",
                     message: "Registro(s) no encontrado(s)",
-                    links: [{ "Agregar registro => curl -X POST ": global.baseURL + "/api/persons" }]
+                    links: [{ "Agregar registro => curl -X POST ": global.baseURL + "/api/person" }]
                 }
 
                 ));
             } else {
-                /* #swagger.responses[200] = { 
-               schema: { $ref: "#/definitions/Person" },
-               description: '<b>People</b>' 
-                } */
 
                 return (res.status(200).send({
                     status: "ok",
-                    people:persons
+                    objects: objects
                 }));
             }
         });
     },
 
+
+    /**
+     * @openapi
+     * /api/person:
+     *   post:
+     *     tags: 
+     *       - Person
+     *     description: Create a person
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: body
+     *         required: true
+     *         schema:
+     *           $ref: "#/components/schemas/Person"
+     *     responses:
+     *       201:
+     *         description: Created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Person"
+     *       400:
+     *         description: Bad Request
+     *       500:
+     *         description: Internal Server Error
+     */
     addPerson: (req, res) => {
 
-        // #swagger.tags = ['User']
-        // #swagger.description = 'AGREGAR NUEVA PERSONA.'
-        // #swagger.schema = { $ref: "#/definitions/Person" }
+
         var data = req.body;
 
-        /*
-            #swagger.parameters['data'] = {
-            in: "body",
-            name: "data",
-            type: "object",
-            required: true
-          }
-        */
 
         //SIN PARAMETROS
         if (!data) {
 
             return (res.status(400).send({
                 status: "error",
-                messager: "Faltan parametros de request en formato JSON"
+                messager: "Faltan parámetros de request en formato JSON"
             })
             );
         }
 
-        //var parsedJSON = JSON.parse(JSON.stringify(data));
-        // console.log(data);
-        // console.log(JSON.stringify(data));
-        // console.log(parsedJSON);
-        // console.log(new personsModel(data));
 
-        var newPerson = new personsModel(data);
+        var newPerson = new personModel(data);
 
 
 
         //INTENTAR GUARDAR EL NUEVO OBJETO
-        newPerson.save((err, storedPerson) => {
+        newPerson.save((err, storedObject) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
@@ -105,47 +171,62 @@ var personsController = {
                 }));
 
             } else {
-                if (!storedPerson) {
+                if (!storedObject) {
                     return (res.status(500).send({
                         status: "error",
                         message: "Error al intentar guardar un nuevo registro"
                     }));
                 }
-                /* #swagger.responses[201] = { 
-               schema: { $ref: "#/definitions/Person" },
-               description: '<b>Creado</b>' 
-                } */
+
                 return (res.status(201).send({
                     status: "ok",
-                    created: storedPerson
+                    created: storedObject
                 }));
             }
 
         });
     },
 
+
+    /**
+     * @openapi
+     * /api/person/{id}:
+     *   put:
+     *     tags: 
+     *       - Person
+     *     description: Update a person
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         description: "Object Id"
+     *         type: string
+     *         required: true
+     *       - in: body
+     *         required: true
+     *         schema:
+     *           $ref: "#/components/schemas/Person"
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Person"
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
     editPerson: (req, res) => {
 
-        // #swagger.tags = ['User']
-        // #swagger.description = 'ACTULIZAR DATOS DE PERSONA.'
-
-        /* #swagger.parameters['id'] = {
-        description: 'Id del registro en la coleccion' ,
-        type: 'string',
-        required: true} 
-        */
-        /*
-            #swagger.parameters['data'] = {
-            in: "body",
-            name: "data",
-            type: "object",
-            required: true
-          }
-        */
-        var personId = req.params.id;
+        var id = req.params.id;
         var data = req.body;
 
-        if (!personId || personId == undefined) {
+        if (!id || id == undefined) {
             return (res.status(400).send({
                 status: "error",
                 message: "falta parámetro requerido ID"
@@ -158,10 +239,10 @@ var personsController = {
             }));
         }
 
-        var query = { '_id': { $eq: personId } };
+        var query = { '_id': { $eq: id } };
         var command = { $set: data };
 
-        personsModel.findOneAndUpdate(query, command, { new: true }, (err, modifiedPerson) => {
+        personModel.findOneAndUpdate(query, command, { new: true }, (err, updatedObject) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
@@ -169,35 +250,54 @@ var personsController = {
                 }));
             }
 
-            if (!modifiedPerson) {
+            if (!updatedObject) {
 
                 return (res.status(404).send({
                     status: "error",
                     message: "No se encontró el registro a modificar"
                 }));
             }
-            /* #swagger.responses[200] = { 
-           schema: { $ref: "#/definitions/Person" },
-           description: '<b>Actualizado</b>' 
-            } */
+
             return (res.status(200).send({
                 status: "ok",
-                updated: modifiedPerson
+                updated: updatedObject
             }));
 
         });
 
     },
 
+    /**
+     * @openapi
+     * /api/person/{id}:
+     *   delete:
+     *     tags: 
+     *       - Person
+     *     description: Delete a person by id
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         description: "Object Id"
+     *         type: string
+     *         required: true
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Person"
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
     deletePerson: (req, res) => {
-        // #swagger.tags = ['User']
-        // #swagger.description = 'ELIMINAR DATOS DE PERSONA.'
 
-        /* #swagger.parameters['id'] = {
-           description: 'Id del registro en la coleccion' ,
-           type: 'string',
-        required: true} 
-        */
 
         var personId = req.params.id;
         if (!personId || personId == undefined) {
@@ -225,10 +325,6 @@ var personsController = {
                 }));
             }
 
-            /* #swagger.responses[200] = { 
-           schema: { $ref: "#/definitions/Person" },
-           description: '<b>Borrado</b>' 
-            } */
             return (res.status(200).send({
                 status: "ok",
                 deleted: deletedObject
@@ -237,31 +333,51 @@ var personsController = {
         });
     },
 
+
+    /**
+     * @openapi
+     * /api/person/logo/{id}:
+     *   put:
+     *     tags: 
+     *       - Person
+     *     description: Upload a person logo
+     *     security:
+     *       - bearerAuth: []
+     *     parameters:
+     *       - in: path
+     *         name: id
+     *         description: "Object Id"
+     *         type: string
+     *         required: true
+     *       - in: form-data
+     *         name: logo
+     *         required: true
+     *         content:
+     *           file:
+     *             schema:
+     *               type: string
+     *               format: base64
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: "#/components/schemas/Person"
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
     setPicture: (req, res) => {
-
-        // #swagger.tags = ['User']
-        // #swagger.description = 'ACTUALIZAR FOTO DE UNA PERSONA'
-
-        /* #swagger.parameters['id'] = {
-           description: 'Id del registro en la coleccion' ,
-           type: 'string',
-           required: true } 
-        */
-        /*
-            #swagger.parameters['picture'] = {
-            in: "formData",
-            name: "picture",
-            type: "file",
-            required: true
-          }
-        */
-
 
         //description: 'Archivo grafico: PNG JPEG GIF' ,
 
         //recojer fichero de petición
         var file_name = 'Imagen no proporcionada...';
-        var personId = req.params.id;
+        var id = req.params.id;
 
         // console.log(req.files);
 
@@ -272,7 +388,7 @@ var personsController = {
                 file_name
             });
         }
-        if (!personId) {
+        if (!id) {
 
             return res.status(400).send({
                 status: 'error',
@@ -298,11 +414,11 @@ var personsController = {
                 //Archivo aceptable
 
 
-                var query = { '_id': { $eq: personId } };
+                var query = { '_id': { $eq: id } };
                 var command = { $set: { 'picture': file_name } };
 
 
-                personsModel.findOneAndUpdate(query, command, { new: true }, (err, updatedObject) => {
+                personModel.findOneAndUpdate(query, command, { new: true }, (err, updatedObject) => {
 
                     if (err) {
 
@@ -324,9 +440,6 @@ var personsController = {
                         });
                     }
 
-                    /* #swagger.responses[200] = { 
-                   description: '<b>Actualizado</b>' 
-                    } */
                     return res.status(200).send({
                         status: 'ok',
                         updated: updatedObject
@@ -351,48 +464,65 @@ var personsController = {
         };
     },
 
+
+    /**
+     * @openapi
+     * /api/person/logo/{filename}:
+     *   get:
+     *     tags: 
+     *       - Person
+     *     description: Get general a person logo by filename
+     *     parameters:
+     *       - in: path
+     *         name: filename
+     *         description: Image filename
+     *         required: true
+     *         schema:
+     *           type: string
+     *     responses:
+     *       200:
+     *         description: OK
+     *         content:
+     *           image/png:
+     *             type: image
+     *       400:
+     *         description: Bad Request
+     *       404:
+     *         description: Not Found
+     *       500:
+     *         description: Internal Server Error
+     */
     getPicture: (req, res) => {
 
-       // #swagger.tags = ['User']
-        // #swagger.description = 'Obtener Foto'
 
-        /* #swagger.parameters['filename'] = {
-           description: 'Nombre de archivo imagen' ,
-           type: 'string',
-            required: true} 
-        */
+        var file = req.params.filename;
+        if (validator.isEmpty(file)) {
+            return (res.status(400).send({
+                status: "error",
+                message: "falta el nombre del archivo"
+            }));
+        }
 
-       var file = req.params.filename;
-       if (validator.isEmpty(file)) {
-           return (res.status(400).send({
-               status: "error",
-               message: "falta el nombre del archivo"
-           }));
-       }
+        var path_file = './uploads/picture/' + file;
 
-       var path_file = './uploads/pictures/' + file;
+        fs.stat(path_file, (err) => {
 
-       fs.stat(path_file, (err) => {
+            if (err) {
 
-           if (err) {
+                return res.status(404).send({
+                    status: 'error',
+                    message: 'archivo no encontrado',
+                    path: path_file
+                });
+            }
 
-               return res.status(404).send({
-                   status: 'error',
-                   message: 'archivo no encontrado',
-                   path: path_file
-               });
-           }
+            return res.status(200).sendFile(path.resolve(path_file));
 
-           /* #swagger.responses[200] = { 
-              description: '<b>Archivo de Imagen</b>' 
-           } */
-           return res.status(200).sendFile(path.resolve(path_file));
-
-       });
+        });
 
 
     }
 
 }
 
-module.exports = personsController;
+module.exports = personController;

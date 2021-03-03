@@ -348,7 +348,7 @@ var usersController = {
             var command = {$set : {refreshAccessToken: refreshToken }};
             usersModel.findOneAndUpdate(query,command);
 
-
+            
             return (res.status(200).send({
                 status: "ok",
                 token: accessToken

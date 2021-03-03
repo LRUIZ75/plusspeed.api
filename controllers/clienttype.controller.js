@@ -3,30 +3,30 @@
 'use strict'
 
 const os = require('os');
-const clientModel = require('../models/clients.model');
+const clienttypeModel = require('../models/clienttype.model');
 const validator = require('validator');
 const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
-const { findOneAndDelete } = require('../models/clients.model');
+const { findOneAndDelete } = require('../models/clienttype.model');
 
 
 /**
  * @swagger
  * tags:
- *   name: Client
- *   description: a client
+ *   name: ClientType
+ *   description: a type of client
  */
 
-var clientController = {
+var clienttypeController = {
 
     /**
      * @openapi
-     * /api/client/{id}:
+     * /api/clienttype/{id}:
      *   get:
      *     tags: 
-     *       - Client
-     *     description: Get a client by Id
+     *       - ClientType
+     *     description: Get a type of client by Id
      *     security:
      *       - ApiKeyAuth: []
      *     parameters:
@@ -42,7 +42,7 @@ var clientController = {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Client"
+     *               $ref: "#/components/schemas/ClientType"
      *       404:
      *         description: Not Found
      *       500:
@@ -51,11 +51,11 @@ var clientController = {
 
     /**
      * @openapi
-     * /api/client:
+     * /api/clienttype:
      *   get:
      *     tags: 
-     *       - Client
-     *     description: Get list of a client
+     *       - ClientType
+     *     description: Get list of a type of client
      *     security:
      *       - ApiKeyAuth: []
      *     responses:
@@ -66,14 +66,14 @@ var clientController = {
      *             schema:
      *               type: array
      *               items:
-     *                 $ref: "#/components/schemas/Client"
+     *                 $ref: "#/components/schemas/ClientType"
      *       404:
      *         description: Not Found
      *       500:
      *         description: Internal Server Error
      */
 
-    getClient: (req, res) => {
+    getClientType: (req, res) => {
 
         var id = req.params.id;
 
@@ -84,7 +84,7 @@ var clientController = {
 
         console.log(query);
 
-        clientModel.find(query, (err, objects) => {
+        clienttypeModel.find(query, (err, objects) => {
 
 
             if (err) {
@@ -100,7 +100,7 @@ var clientController = {
                 return (res.status(404).send({
                     status: "error",
                     message: "Registro(s) no encontrado(s)",
-                    links: [{ "Agregar registro => curl -X POST ": global.baseURL + "/api/client" }]
+                    links: [{ "Agregar registro => curl -X POST ": global.baseURL + "/api/clienttype" }]
                 }
 
                 ));
@@ -117,31 +117,31 @@ var clientController = {
 
     /**
      * @openapi
-     * /api/client:
+     * /api/clienttype:
      *   post:
      *     tags: 
-     *       - Client
-     *     description: Create a client
+     *       - ClientType
+     *     description: Create a type of client
      *     security:
      *       - bearerAuth: []
      *     parameters:
      *       - in: body
      *         required: true
      *         schema:
-     *           $ref: "#/components/schemas/Client"
+     *           $ref: "#/components/schemas/ClientType"
      *     responses:
      *       201:
      *         description: Created
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Client"
+     *               $ref: "#/components/schemas/ClientType"
      *       400:
      *         description: Bad Request
      *       500:
      *         description: Internal Server Error
      */
-    addClient: (req, res) => {
+    addClientType: (req, res) => {
 
 
         var data = req.body;
@@ -158,12 +158,12 @@ var clientController = {
         }
 
 
-        var newClient = new clientModel(data);
+        var newClientType = new clienttypeModel(data);
 
 
 
         //INTENTAR GUARDAR EL NUEVO OBJETO
-        newClient.save((err, storedObject) => {
+        newClientType.save((err, storedObject) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
@@ -190,11 +190,11 @@ var clientController = {
 
     /**
      * @openapi
-     * /api/client/{id}:
+     * /api/clienttype/{id}:
      *   put:
      *     tags: 
-     *       - Client
-     *     description: Update a client
+     *       - ClientType
+     *     description: Update a type of client
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -206,14 +206,14 @@ var clientController = {
      *       - in: body
      *         required: true
      *         schema:
-     *           $ref: "#/components/schemas/Client"
+     *           $ref: "#/components/schemas/ClientType"
      *     responses:
      *       200:
      *         description: Ok
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Client"
+     *               $ref: "#/components/schemas/ClientType"
      *       400:
      *         description: Bad Request
      *       404:
@@ -221,7 +221,7 @@ var clientController = {
      *       500:
      *         description: Internal Server Error
      */
-    editClient: (req, res) => {
+    editClientType: (req, res) => {
 
         var id = req.params.id;
         var data = req.body;
@@ -242,7 +242,7 @@ var clientController = {
         var query = { '_id': { $eq: id } };
         var command = { $set: data };
 
-        clientModel.findOneAndUpdate(query, command, { new: true }, (err, updatedObject) => {
+        clienttypeModel.findOneAndUpdate(query, command, { new: true }, (err, updatedObject) => {
             if (err) {
                 return (res.status(500).send({
                     status: "error",
@@ -269,11 +269,11 @@ var clientController = {
 
     /**
      * @openapi
-     * /api/client/{id}:
+     * /api/clienttype/{id}:
      *   delete:
      *     tags: 
-     *       - Client
-     *     description: Delete a client by id
+     *       - ClientType
+     *     description: Delete a type of client by id
      *     security:
      *       - bearerAuth: []
      *     parameters:
@@ -288,7 +288,7 @@ var clientController = {
      *         content:
      *           application/json:
      *             schema:
-     *               $ref: "#/components/schemas/Client"
+     *               $ref: "#/components/schemas/ClientType"
      *       400:
      *         description: Bad Request
      *       404:
@@ -296,7 +296,7 @@ var clientController = {
      *       500:
      *         description: Internal Server Error
      */
-    deleteClient: (req, res) => {
+    deleteClientType: (req, res) => {
 
 
         var personId = req.params.id;
@@ -334,195 +334,6 @@ var clientController = {
     },
     
 
-    /**
-     * @openapi
-     * /api/client/logo/{id}:
-     *   put:
-     *     tags: 
-     *       - Client
-     *     description: Upload a client logo
-     *     security:
-     *       - bearerAuth: []
-     *     parameters:
-     *       - in: path
-     *         name: id
-     *         description: "Object Id"
-     *         type: string
-     *         required: true
-     *       - in: form-data
-     *         name: logo
-     *         required: true
-     *         content:
-     *           file:
-     *             schema:
-     *               type: string
-     *               format: base64
-     *     responses:
-     *       200:
-     *         description: Ok
-     *         content:
-     *           application/json:
-     *             schema:
-     *               $ref: "#/components/schemas/Client"
-     *       400:
-     *         description: Bad Request
-     *       404:
-     *         description: Not Found
-     *       500:
-     *         description: Internal Server Error
-     */
-    setPicture: (req, res) => {
-
-        //description: 'Archivo grafico: PNG JPEG GIF' ,
-
-        //recojer fichero de petición
-        var file_name = 'Imagen no proporcionada...';
-        var id = req.params.id;
-
-        // console.log(req.files);
-
-        if (!req.files.picture) {
-            return res.status(400).send({
-                status: 'error',
-                message: 'No hay parametro: logo',
-                file_name
-            });
-        }
-        if (!id) {
-
-            return res.status(400).send({
-                status: 'error',
-                message: 'No hay parámetro: Id'
-            });
-        }
-
-        //conseguir nombre y extensión del archivo
-        var file_path = req.files.picture.path;
-
-        var file_name = path.basename(file_path);
-
-        var file_ext = path.extname(file_name);
-
-
-        console.log(file_ext);
-
-        switch (file_ext) {
-            case '.png':
-            case '.jpg':
-            case '.jpeg':
-            case '.gif':
-                //Archivo aceptable
-
-
-                var query = { '_id': { $eq: id } };
-                var command = { $set: { 'logo': file_name } };
-
-
-                clientModel.findOneAndUpdate(query, command, { new: true }, (err, updatedObject) => {
-
-                    if (err) {
-
-                        fs.unlinkSync(file_path);
-
-                        return res.status(500).send({
-                            status: 'error',
-                            error: err
-                        });
-                    }
-
-                    if (!updatedObject) {
-
-                        fs.unlinkSync(file_path);
-
-                        return res.status(404).send({
-                            status: 'error',
-                            message: 'No se pudo encontrar el registro'
-                        });
-                    }
-
-                    return res.status(200).send({
-                        status: 'ok',
-                        updated: updatedObject
-                    });
-                });
-                break;
-
-            default:
-                //Archivo no aceptado
-
-                //Borrar el archivo
-
-                fs.unlinkSync(file_path);
-
-                return res.status(400).send({
-                    status: 'error',
-                    message: 'Tipo de archivo no es imagen',
-                    file_name
-                }
-                );
-                break;
-        };
-    },
-
-
-    /**
-     * @openapi
-     * /api/client/logo/{filename}:
-     *   get:
-     *     tags: 
-     *       - Client
-     *     description: Get general a client logo by filename
-     *     parameters:
-     *       - in: path
-     *         name: filename
-     *         description: Image filename
-     *         required: true
-     *         schema:
-     *           type: string
-     *     responses:
-     *       200:
-     *         description: OK
-     *         content:
-     *           image/png:
-     *             type: image
-     *       400:
-     *         description: Bad Request
-     *       404:
-     *         description: Not Found
-     *       500:
-     *         description: Internal Server Error
-     */
-    getPicture: (req, res) => {
-
-
-       var file = req.params.filename;
-       if (validator.isEmpty(file)) {
-           return (res.status(400).send({
-               status: "error",
-               message: "falta el nombre del archivo"
-           }));
-       }
-
-       var path_file = './uploads/logos/' + file;
-
-       fs.stat(path_file, (err) => {
-
-           if (err) {
-
-               return res.status(404).send({
-                   status: 'error',
-                   message: 'archivo no encontrado',
-                   path: path_file
-               });
-           }
-
-           return res.status(200).sendFile(path.resolve(path_file));
-
-       });
-
-
-    }
-
 }
 
-module.exports = clientController;
+module.exports = clienttypeController;
